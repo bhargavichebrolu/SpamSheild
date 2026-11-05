@@ -1,0 +1,95 @@
+{
+  "classifier": "LogisticRegression(solver=liblinear) on word_1 TF-IDF",
+  "method": "cosine similarity of word_1 TF-IDF vectors, fitted on training rows",
+  "metrics_by_similarity_band": {
+    "0.00_to_0.80": {
+      "metrics": {
+        "accuracy": 0.9717,
+        "f1_spam": 0.9714,
+        "ham_flagged_as_spam": 115,
+        "precision_spam": 0.9651,
+        "recall_spam": 0.9778,
+        "spam_missed": 72,
+        "true_ham": 3246,
+        "true_spam": 3177
+      },
+      "rows": 6610,
+      "share_of_rows": 0.3464,
+      "spam_share": 0.4915
+    },
+    "0.80_to_0.90": {
+      "metrics": {
+        "accuracy": 0.9844,
+        "f1_spam": 0.9829,
+        "ham_flagged_as_spam": 34,
+        "precision_spam": 0.9706,
+        "recall_spam": 0.9956,
+        "spam_missed": 5,
+        "true_ham": 1333,
+        "true_spam": 1121
+      },
+      "rows": 2493,
+      "share_of_rows": 0.1306,
+      "spam_share": 0.4517
+    },
+    "0.90_to_0.95": {
+      "metrics": {
+        "accuracy": 0.982,
+        "f1_spam": 0.9758,
+        "ham_flagged_as_spam": 47,
+        "precision_spam": 0.9669,
+        "recall_spam": 0.9849,
+        "spam_missed": 21,
+        "true_ham": 2348,
+        "true_spam": 1371
+      },
+      "rows": 3787,
+      "share_of_rows": 0.1985,
+      "spam_share": 0.3676
+    },
+    "0.95_and_above": {
+      "metrics": {
+        "accuracy": 0.9884,
+        "f1_spam": 0.989,
+        "ham_flagged_as_spam": 46,
+        "precision_spam": 0.986,
+        "recall_spam": 0.992,
+        "spam_missed": 26,
+        "true_ham": 2887,
+        "true_spam": 3233
+      },
+      "rows": 6192,
+      "share_of_rows": 0.3245,
+      "spam_share": 0.5263
+    }
+  },
+  "overall_metrics": {
+    "accuracy": 0.9808,
+    "f1_spam": 0.9799,
+    "ham_flagged_as_spam": 242,
+    "precision_spam": 0.9735,
+    "recall_spam": 0.9863,
+    "spam_missed": 124,
+    "true_ham": 9814,
+    "true_spam": 8902
+  },
+  "peak_memory_gb": 1.32,
+  "rows_used": {
+    "train": 152653,
+    "validation": 19082
+  },
+  "share_of_validation_rows_at_or_above_similarity": {
+    "Ham": {
+      "0.80": 0.6658,
+      "0.90": 0.5298,
+      "0.95": 0.2917,
+      "0.99": 0.0676
+    },
+    "Spam": {
+      "0.80": 0.64,
+      "0.90": 0.5153,
+      "0.95": 0.3611,
+      "0.99": 0.1528
+    }
+  }
+}

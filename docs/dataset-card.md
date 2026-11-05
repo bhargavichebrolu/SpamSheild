@@ -81,19 +81,66 @@ These are the shares of non-blank rows containing each word, in any letter case,
 | `escapelong` | 10.48% | 23.98% |
 | `http` | 28.27% | 45.00% |
 
+## Text format
+
+These results come from [`format_analysis.json`](../backend/reports/format_analysis.json), covering all 193,850 non-blank rows.
+
+The text was processed before this project received it:
+
+| Finding | Result |
+|---|---|
+| Rows with uppercase letters | 0 |
+| Rows with `http://` or `https://` | 0; the words `http` and `https` appear on their own |
+| `https` as a word | Ham 6.56%, Spam 0.30% |
+| Text outside ASCII | Ham 6.16%, Spam 15.88% |
+
+The way numbers are written also splits the data into separate styles, and no row mixes digits with the placeholder:
+
+| Number style | Ham rows | Spam rows | Rows with spaced punctuation (for example ` . `) |
+|---|---:|---:|---:|
+| Placeholder (`escapenumber`) only | 72,961 | 53,018 | 0.0% |
+| Digits only | 15,784 | 11,132 | 89.3% |
+| Neither | 13,414 | 27,541 | 10.1% |
+
+**This is strong evidence that the data was combined from separately processed sources**, although the sources themselves have not been verified.
+
+## Preparation
+
+Results come from [`data_preparation.json`](../backend/reports/data_preparation.json). The raw file isn't changed. [`prepare_data.py`](../backend/training/prepare_data.py) applies these rules in order, and rows are compared after [preprocessing](PROJECT_EXPLANATION.md#text-preprocessing):
+
+| Rule | Rows removed | Reason |
+|---|---:|---:|
+| Blank text | 2 | Nothing to learn from |
+| No word of two or more characters after preprocessing | 39 | The word features would be empty |
+| Same preprocessed text under both labels | 20 (6 texts) | The label can't be trusted, and the text can't teach a consistent answer |
+| Repeat of a preprocessed text | 2,974 (first copy kept) | Copies in different splits would turn testing into recognition |
+| **Rows kept** | **190,817** | |
+
+### Splits
+
+The splits are stratified by label, with random seed 42.
+
+| Split | Rows | Ham | Spam | Spam share |
+|---|---:|---:|---:|---:|
+| Train | 152,653 | 80,450 | 72,203 | 47.3% |
+| Validation | 19,082 | 10,056 | 9,026 | 47.3% |
+| Test | 19,082 | 10,057 | 9,025 | 47.3% |
+
+No preprocessed text appears in more than one split. Code can't load the test split without explicitly asking for it, and no experiment or word analysis has done so. The format analysis and cleaning read every row before the split, including rows that became test data, but they score no model and choose no features.
+
 ## Known limitations and open questions
 
-These are hypotheses to test in later milestones, not settled conclusions.
-
-- **Possible source leakage:** `enron` and `subject` appear at very different rates in each class. They may reflect where messages came from rather than whether they are spam, which could make test scores overstate real-world performance. Milestone 3 will measure this.
-- **Text may already be processed:** `escapenumber` and `escapelong` look like placeholders, and the sampled text looks already lowercased and tokenised. Real pasted email wouldn't look the same. Milestone 2 will examine this.
-- **Near-duplicates could leak across splits:** copies of a message could land in both training and test data unless they are handled before splitting. Milestone 2 will set the rule.
-- **Conflicting labels:** a few short or near-identical texts appear under both labels. Milestone 2 will decide how to treat them and record why.
-- **Extreme lengths:** one row has about 11.5 million characters. Milestone 2 will decide how training handles these rows, and Milestone 4 will set an API input limit.
+- **Likely source leakage:** on training data, some words strongly separate the labels but may identify a source rather than spam. Examples are `enron` (Ham 27.4%, Spam 5.1%), `enrononline` (1.2%, 0.0%), and software-list terms such as `viewcvs` and `websvn` (1.9%, 0.0%). Real spam words such as `cialis` (0.0%, 4.0%) appear too. Milestone 3 will measure how much the model depends on source-related words.
+- **Template similarity:** removing identical text doesn't remove templates. On validation data, 53.0% of Ham and 51.5% of Spam rows have a training row with cosine similarity of at least 0.90. Scores on these rows are higher, as explained in the [project explanation](PROJECT_EXPLANATION.md#leakage-safeguards).
+- **Different from real email:** the text is lowercase with placeholders, and `escapelong` follows a rule this project can't reproduce. Preprocessing narrows the gap but can't close it.
+- **Unknown representativeness:** the 47.3% spam share reflects this dataset, not real inboxes. Results may not carry over to other kinds of email.
+- **Extreme lengths:** preprocessing keeps only the first 20,000 characters. Milestone 4 will set the API's input limit.
 
 ## Data handling
 
 - The raw file stays unchanged in `backend/data/raw/` and is excluded from Git. [Instructions for getting it](../backend/data/README.md) are in the repository.
 - The inspection script checks the file's hash before reading it.
-- The saved report contains aggregate statistics only, with no email text.
+- Committed reports contain aggregate statistics only, with no email text.
 - Example records appear only in the terminal, using `--show-examples`.
+- The split file holds row numbers and split names, not text, and is excluded from Git.
+- The vocabulary report is excluded from Git because its words can include people's surnames.

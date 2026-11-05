@@ -1,0 +1,42 @@
+{
+  "cleaning": {
+    "conflicting_label_texts": 6,
+    "removed_blank": 2,
+    "removed_conflicting_labels": 20,
+    "removed_duplicates": 2974,
+    "removed_no_word_tokens": 39,
+    "rows_in": 193852,
+    "rows_kept": 190817
+  },
+  "leakage_checks": {
+    "preprocessed_texts_shared_between_splits": 0
+  },
+  "source_sha256": "e7f57b47676e456ebf9866dc1fd311a93e923458c76a22b6ea5c9439f4da58aa",
+  "split": {
+    "assignments_sha256": "11d4250af2fcbbdd095e0f3d9366f1dba88ea30ccd5c666cef7250fb5dfb14a3",
+    "random_seed": 42,
+    "rows": {
+      "test": {
+        "Ham": 10057,
+        "Spam": 9025,
+        "spam_share": 0.473,
+        "total": 19082
+      },
+      "train": {
+        "Ham": 80450,
+        "Spam": 72203,
+        "spam_share": 0.473,
+        "total": 152653
+      },
+      "validation": {
+        "Ham": 10056,
+        "Spam": 9026,
+        "spam_share": 0.473,
+        "total": 19082
+      }
+    },
+    "stratified_by": "label",
+    "test_share": 0.1,
+    "validation_share": 0.1
+  }
+}

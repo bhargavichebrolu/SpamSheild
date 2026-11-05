@@ -17,6 +17,9 @@ backend/data/processed/
 *.db
 *.sqlite3
 
+# Contains single words from the dataset, including people's surnames
+backend/reports/vocabulary_analysis.json
+
 # Secrets and local settings
 .env
 .env.*

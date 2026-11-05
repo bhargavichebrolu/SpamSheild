@@ -1,0 +1,171 @@
+{
+  "flags_by_label": {
+    "has_at_sign": {
+      "Ham": {
+        "rows": 5910,
+        "share": 0.0579
+      },
+      "Spam": {
+        "rows": 3347,
+        "share": 0.0365
+      }
+    },
+    "has_digit": {
+      "Ham": {
+        "rows": 15784,
+        "share": 0.1545
+      },
+      "Spam": {
+        "rows": 11132,
+        "share": 0.1214
+      }
+    },
+    "has_escapelong": {
+      "Ham": {
+        "rows": 10706,
+        "share": 0.1048
+      },
+      "Spam": {
+        "rows": 21986,
+        "share": 0.2398
+      }
+    },
+    "has_escapenumber": {
+      "Ham": {
+        "rows": 72961,
+        "share": 0.7142
+      },
+      "Spam": {
+        "rows": 53018,
+        "share": 0.5782
+      }
+    },
+    "has_https_word": {
+      "Ham": {
+        "rows": 6705,
+        "share": 0.0656
+      },
+      "Spam": {
+        "rows": 279,
+        "share": 0.003
+      }
+    },
+    "has_non_ascii": {
+      "Ham": {
+        "rows": 6293,
+        "share": 0.0616
+      },
+      "Spam": {
+        "rows": 14557,
+        "share": 0.1588
+      }
+    },
+    "has_spaced_punctuation": {
+      "Ham": {
+        "rows": 15225,
+        "share": 0.149
+      },
+      "Spam": {
+        "rows": 12968,
+        "share": 0.1414
+      }
+    },
+    "has_uppercase": {
+      "Ham": {
+        "rows": 0,
+        "share": 0.0
+      },
+      "Spam": {
+        "rows": 0,
+        "share": 0.0
+      }
+    },
+    "has_url_scheme": {
+      "Ham": {
+        "rows": 0,
+        "share": 0.0
+      },
+      "Spam": {
+        "rows": 0,
+        "share": 0.0
+      }
+    }
+  },
+  "longest_token_length": {
+    "by_number_style": {
+      "digits_only": {
+        "max": 125,
+        "median": 13,
+        "p99": 19,
+        "p999": 24,
+        "rows": 26916
+      },
+      "neither": {
+        "max": 46,
+        "median": 12,
+        "p99": 19,
+        "p999": 21,
+        "rows": 40955
+      },
+      "placeholder_only": {
+        "max": 77,
+        "median": 14,
+        "p99": 19,
+        "p999": 26,
+        "rows": 125979
+      }
+    },
+    "with_escapelong": {
+      "max": 77,
+      "median": 16,
+      "p99": 19,
+      "p999": 25,
+      "rows": 32692
+    },
+    "without_escapelong": {
+      "max": 125,
+      "median": 13,
+      "p99": 19,
+      "p999": 26,
+      "rows": 161158
+    }
+  },
+  "number_style": {
+    "digits_only": {
+      "Ham": {
+        "rows": 15784,
+        "share": 0.1545
+      },
+      "Spam": {
+        "rows": 11132,
+        "share": 0.1214
+      }
+    },
+    "neither": {
+      "Ham": {
+        "rows": 13414,
+        "share": 0.1313
+      },
+      "Spam": {
+        "rows": 27541,
+        "share": 0.3004
+      }
+    },
+    "placeholder_only": {
+      "Ham": {
+        "rows": 72961,
+        "share": 0.7142
+      },
+      "Spam": {
+        "rows": 53018,
+        "share": 0.5782
+      }
+    }
+  },
+  "rows_analysed": 193850,
+  "spaced_punctuation_share_by_number_style": {
+    "digits_only": 0.8932,
+    "neither": 0.1014,
+    "placeholder_only": 0.0
+  }
+}

@@ -49,12 +49,12 @@ Most functions take data and return results, with file writing and printing kept
 ## 6. Dependencies
 
 - **Packages:** `pandas`, plus `argparse`, `hashlib`, `json`, `pathlib` and `sys` from the standard library.
-- **Project files:** it imports nothing from the project, and `backend/tests/test_inspect_dataset.py` imports it.
+- **Project files:** it imports nothing from the project. `backend/tests/test_inspect_dataset.py` tests it, and the other training scripts import its loading, hashing and report-writing helpers.
 
 ## 7. How its output is used next
 
 - [`docs/dataset-card.md`](../dataset-card.md) records the verified facts by hand from the report.
-- Milestone 2 will use the duplicate, conflict and length findings to set its cleaning rules.
+- [`prepare_data.py`](../../backend/training/prepare_data.py) reuses its helpers, and its cleaning rules follow from the duplicate, conflict and length findings.
 - Milestone 5's dataset explorer can read the report directly.
 
 ## 8. Tests

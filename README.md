@@ -4,12 +4,12 @@ An explainable email spam classifier, planned as an end-to-end machine learning 
 
 ## Project status
 
-**Milestone 1 of 6 (project foundation and dataset verification) is complete.** There is no trained model, API or web interface yet, and no model performance results exist.
+**Milestones 1 and 2 of 6 are complete.** There is no final model, API or web interface yet. The only scores so far are validation results from feature experiments, so they aren't final model performance.
 
 | Status | Work |
 |---|---|
-| Done | Python environment, dataset inspection script and report, tests, starter documentation |
-| Planned | Preprocessing and features, model comparison, API, web application, final verification |
+| Done | Python environment, dataset inspection, preprocessing, leakage-safe splits, TF-IDF feature experiments, tests |
+| Planned | Model comparison and final evaluation, API, web application, final verification |
 
 The dataset's licence is not verified, so the raw data is not included or redistributed here. See the [dataset card](docs/dataset-card.md).
 
@@ -59,17 +59,32 @@ python backend\training\inspect_dataset.py
 
 Add `--show-examples` to print short text previews to the terminal. Previews are never saved to the report.
 
+Run the data pipeline from the `backend` folder, in this order. The feature experiments take several minutes, and the largest needs about 3 GB of free memory:
+
+```powershell
+cd backend
+python -m training.analyse_format
+python -m training.prepare_data
+python -m training.analyse_vocabulary
+python -m training.feature_experiments --stage sample
+python -m training.feature_experiments --stage scale
+python -m training.feature_experiments --stage all_train
+python -m training.feature_experiments --near-duplicates
+```
+
 ## Repository layout
 
 ```text
 spamshield-ai/
 ├── backend/
+│   ├── app/ml/                    Preprocessing shared by training and the future API
 │   ├── data/
 │   │   ├── README.md              How to get the dataset
+│   │   ├── processed/             Generated split file (not committed)
 │   │   └── raw/                   Local dataset file (not committed)
-│   ├── reports/                   Generated dataset report
+│   ├── reports/                   Generated results
 │   ├── tests/                     Automated tests
-│   ├── training/                  Dataset inspection, and training code later
+│   ├── training/                  Inspection, data preparation and experiments
 │   ├── pytest.ini
 │   └── requirements.txt
 ├── docs/                          Requirements, explanations and logs

@@ -1,0 +1,332 @@
+{
+  "all_train_word_1_2_full": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 148.4,
+      "peak_memory_gb": 2.88,
+      "predict_seconds": 14.1
+    },
+    "features": "word_1_2",
+    "mean_terms_per_row": 238.4,
+    "metrics": {
+      "accuracy": 0.9834,
+      "f1_spam": 0.9826,
+      "ham_flagged_as_spam": 212,
+      "precision_spam": 0.9768,
+      "recall_spam": 0.9885,
+      "spam_missed": 104,
+      "true_ham": 9844,
+      "true_spam": 8922
+    },
+    "name": "all_train_word_1_2_full",
+    "preprocessing": "full",
+    "rows_used": {
+      "train": 152653,
+      "validation": 19082
+    },
+    "stage": "all_train",
+    "train_rows": null,
+    "validation_rows": null,
+    "vocabulary_size": 300000
+  },
+  "all_train_word_1_full": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 41.1,
+      "peak_memory_gb": 1.26,
+      "predict_seconds": 5.2
+    },
+    "features": "word_1",
+    "mean_terms_per_row": 120.4,
+    "metrics": {
+      "accuracy": 0.9808,
+      "f1_spam": 0.9799,
+      "ham_flagged_as_spam": 242,
+      "precision_spam": 0.9735,
+      "recall_spam": 0.9863,
+      "spam_missed": 124,
+      "true_ham": 9814,
+      "true_spam": 8902
+    },
+    "name": "all_train_word_1_full",
+    "preprocessing": "full",
+    "rows_used": {
+      "train": 152653,
+      "validation": 19082
+    },
+    "stage": "all_train",
+    "train_rows": null,
+    "validation_rows": null,
+    "vocabulary_size": 243182
+  },
+  "sample_char_3_5_full": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 32.2,
+      "peak_memory_gb": 1.13,
+      "predict_seconds": 14.6
+    },
+    "features": "char_3_5",
+    "mean_terms_per_row": 1222.8,
+    "metrics": {
+      "accuracy": 0.963,
+      "f1_spam": 0.9615,
+      "ham_flagged_as_spam": 127,
+      "precision_spam": 0.9478,
+      "recall_spam": 0.9755,
+      "spam_missed": 58,
+      "true_ham": 2508,
+      "true_spam": 2307
+    },
+    "name": "sample_char_3_5_full",
+    "preprocessing": "full",
+    "rows_used": {
+      "train": 10000,
+      "validation": 5000
+    },
+    "stage": "sample",
+    "train_rows": 10000,
+    "validation_rows": 5000,
+    "vocabulary_size": 146903
+  },
+  "sample_word_1_2_full": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 11.6,
+      "peak_memory_gb": 1.13,
+      "predict_seconds": 3.4
+    },
+    "features": "word_1_2",
+    "mean_terms_per_row": 204.9,
+    "metrics": {
+      "accuracy": 0.9624,
+      "f1_spam": 0.9609,
+      "ham_flagged_as_spam": 133,
+      "precision_spam": 0.9456,
+      "recall_spam": 0.9767,
+      "spam_missed": 55,
+      "true_ham": 2502,
+      "true_spam": 2310
+    },
+    "name": "sample_word_1_2_full",
+    "preprocessing": "full",
+    "rows_used": {
+      "train": 10000,
+      "validation": 5000
+    },
+    "stage": "sample",
+    "train_rows": 10000,
+    "validation_rows": 5000,
+    "vocabulary_size": 128740
+  },
+  "sample_word_1_2_stop_full": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 10.3,
+      "peak_memory_gb": 1.13,
+      "predict_seconds": 3.1
+    },
+    "features": "word_1_2_stop",
+    "mean_terms_per_row": 133.8,
+    "metrics": {
+      "accuracy": 0.9624,
+      "f1_spam": 0.9608,
+      "ham_flagged_as_spam": 130,
+      "precision_spam": 0.9467,
+      "recall_spam": 0.9755,
+      "spam_missed": 58,
+      "true_ham": 2505,
+      "true_spam": 2307
+    },
+    "name": "sample_word_1_2_stop_full",
+    "preprocessing": "full",
+    "rows_used": {
+      "train": 10000,
+      "validation": 5000
+    },
+    "stage": "sample",
+    "train_rows": 10000,
+    "validation_rows": 5000,
+    "vocabulary_size": 93656
+  },
+  "sample_word_1_full": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 1.7,
+      "peak_memory_gb": 1.13,
+      "predict_seconds": 0.7
+    },
+    "features": "word_1",
+    "mean_terms_per_row": 107.5,
+    "metrics": {
+      "accuracy": 0.9628,
+      "f1_spam": 0.9612,
+      "ham_flagged_as_spam": 127,
+      "precision_spam": 0.9478,
+      "recall_spam": 0.9751,
+      "spam_missed": 59,
+      "true_ham": 2508,
+      "true_spam": 2306
+    },
+    "name": "sample_word_1_full",
+    "preprocessing": "full",
+    "rows_used": {
+      "train": 10000,
+      "validation": 5000
+    },
+    "stage": "sample",
+    "train_rows": 10000,
+    "validation_rows": 5000,
+    "vocabulary_size": 41398
+  },
+  "sample_word_1_keep_source_formatting": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 3.2,
+      "peak_memory_gb": 1.13,
+      "predict_seconds": 1.1
+    },
+    "features": "word_1",
+    "mean_terms_per_row": 108.5,
+    "metrics": {
+      "accuracy": 0.962,
+      "f1_spam": 0.9604,
+      "ham_flagged_as_spam": 126,
+      "precision_spam": 0.9481,
+      "recall_spam": 0.9729,
+      "spam_missed": 64,
+      "true_ham": 2509,
+      "true_spam": 2301
+    },
+    "name": "sample_word_1_keep_source_formatting",
+    "preprocessing": "keep_source_formatting",
+    "rows_used": {
+      "train": 10000,
+      "validation": 5000
+    },
+    "stage": "sample",
+    "train_rows": 10000,
+    "validation_rows": 5000,
+    "vocabulary_size": 42180
+  },
+  "sample_word_1_no_truncation": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 5.5,
+      "peak_memory_gb": 1.13,
+      "predict_seconds": 2.3
+    },
+    "features": "word_1",
+    "mean_terms_per_row": 109.2,
+    "metrics": {
+      "accuracy": 0.9632,
+      "f1_spam": 0.9617,
+      "ham_flagged_as_spam": 127,
+      "precision_spam": 0.9478,
+      "recall_spam": 0.9759,
+      "spam_missed": 57,
+      "true_ham": 2508,
+      "true_spam": 2308
+    },
+    "name": "sample_word_1_no_truncation",
+    "preprocessing": "no_truncation",
+    "rows_used": {
+      "train": 10000,
+      "validation": 5000
+    },
+    "stage": "sample",
+    "train_rows": 10000,
+    "validation_rows": 5000,
+    "vocabulary_size": 42495
+  },
+  "sample_word_1_numbers_only": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 3.5,
+      "peak_memory_gb": 1.13,
+      "predict_seconds": 1.5
+    },
+    "features": "word_1",
+    "mean_terms_per_row": 109.4,
+    "metrics": {
+      "accuracy": 0.9622,
+      "f1_spam": 0.9606,
+      "ham_flagged_as_spam": 129,
+      "precision_spam": 0.947,
+      "recall_spam": 0.9746,
+      "spam_missed": 60,
+      "true_ham": 2506,
+      "true_spam": 2305
+    },
+    "name": "sample_word_1_numbers_only",
+    "preprocessing": "numbers_only",
+    "rows_used": {
+      "train": 10000,
+      "validation": 5000
+    },
+    "stage": "sample",
+    "train_rows": 10000,
+    "validation_rows": 5000,
+    "vocabulary_size": 42497
+  },
+  "scale_40k_char_3_5_full": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 120.0,
+      "peak_memory_gb": 2.01,
+      "predict_seconds": 31.0
+    },
+    "features": "char_3_5",
+    "mean_terms_per_row": 1244.2,
+    "metrics": {
+      "accuracy": 0.9724,
+      "f1_spam": 0.9711,
+      "ham_flagged_as_spam": 344,
+      "precision_spam": 0.9626,
+      "recall_spam": 0.9797,
+      "spam_missed": 183,
+      "true_ham": 9712,
+      "true_spam": 8843
+    },
+    "name": "scale_40k_char_3_5_full",
+    "preprocessing": "full",
+    "rows_used": {
+      "train": 40000,
+      "validation": 19082
+    },
+    "stage": "scale",
+    "train_rows": 40000,
+    "validation_rows": null,
+    "vocabulary_size": 300000
+  },
+  "scale_40k_word_1_2_full": {
+    "classifier": "LogisticRegression(solver=liblinear)",
+    "cost": {
+      "fit_seconds": 45.8,
+      "peak_memory_gb": 1.49,
+      "predict_seconds": 13.4
+    },
+    "features": "word_1_2",
+    "mean_terms_per_row": 223.5,
+    "metrics": {
+      "accuracy": 0.9746,
+      "f1_spam": 0.9733,
+      "ham_flagged_as_spam": 315,
+      "precision_spam": 0.9657,
+      "recall_spam": 0.9812,
+      "spam_missed": 170,
+      "true_ham": 9741,
+      "true_spam": 8856
+    },
+    "name": "scale_40k_word_1_2_full",
+    "preprocessing": "full",
+    "rows_used": {
+      "train": 40000,
+      "validation": 19082
+    },
+    "stage": "scale",
+    "train_rows": 40000,
+    "validation_rows": null,
+    "vocabulary_size": 300000
+  }
+}
