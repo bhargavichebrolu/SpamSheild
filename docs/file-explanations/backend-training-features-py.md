@@ -47,7 +47,7 @@ It maps a name such as `word_1_2` to its settings, and builds an unfitted vector
 
 ## 7. How its output is used next
 
-`feature_experiments.py` uses it now. Milestone 3's training will build its pipelines from it, with `word_1_2` as the main configuration and `word_1` as a lighter comparison.
+`feature_experiments.py`, `compare_models.py`, `source_leakage.py`, `evaluate.py` and `train_final.py` all build vectorisers from it. The final model uses `word_1`.
 
 ## 8. Tests
 

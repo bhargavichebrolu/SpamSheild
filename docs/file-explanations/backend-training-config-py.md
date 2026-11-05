@@ -23,6 +23,7 @@ It has no inputs or outputs. Other files import its constants.
 | `PROCESSED_DIR`, `SPLIT_ASSIGNMENTS` | Where the split file is written |
 | `RANDOM_SEED` | `42`, used wherever randomness affects a result |
 | `VALIDATION_SHARE`, `TEST_SHARE` | `0.10` each, leaving 80% for training |
+| `FINAL_MODEL` | The chosen model, setting, features and word removal. It's set from validation results, and test results must never change it |
 
 ## 5. Key implementation decisions
 
@@ -35,11 +36,11 @@ Only `pathlib` from the standard library.
 
 ## 7. How its output is used next
 
-`prepare_data.py`, `analyse_format.py`, `analyse_vocabulary.py` and `feature_experiments.py` import these values, and Milestone 3's training will too.
+The training scripts import these values, and `train_final.py` builds the saved pipeline from `FINAL_MODEL`.
 
 ## 8. Tests
 
-It has no direct tests, as it contains no logic. Tests of `prepare_data.py` cover the split shares in practice.
+It contains no logic. Tests of `prepare_data.py` cover the split shares in practice, and `test_final_pipeline.py` checks that `FINAL_MODEL` names a known model, setting and removal.
 
 ## 9. Alternatives considered
 

@@ -821,3 +821,21 @@ Agreed by the project owner on 2026-11-05 when approving the milestone plan.
 - Begin with a controlled sample before running full character n-gram experiments, because available memory is limited.
 - Keep the test set reserved for final evaluation.
 - Document the source-leakage experiment carefully, and report its outcome in the model card.
+
+### Milestone 3 requirements
+
+- Compare models on the same split with comparable feature configurations, and select using validation results only.
+- Do not use test results to tune models, preprocessing, thresholds or feature choices.
+- Derive source-marker words from training data only. Do not describe the experiment as proof of generalisation to unseen sources.
+- After freezing the pipeline, evaluate the test set once, reporting overall and similarity-band results with sample counts.
+- Avoid broad hyperparameter searches unless a small controlled experiment shows they are feasible.
+
+### Website (Milestone 5)
+
+The website is a required deliverable of Milestone 5: a working React and TypeScript frontend connected to the FastAPI backend, not screenshots or a design mock-up. When implemented:
+
+- Provide the exact commands to start the frontend and backend locally, and the local URL.
+- It must open in a browser and support email classification end to end.
+- Show the actual implemented screens, and explain how the frontend calls the backend.
+- Include loading, validation and error states.
+- Do not claim the website exists until it has been implemented and verified running.

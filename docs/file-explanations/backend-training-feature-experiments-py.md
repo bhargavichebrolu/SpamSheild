@@ -36,11 +36,11 @@ python -m training.feature_experiments --near-duplicates
 | `Experiment`, `EXPERIMENTS` | Each experiment's settings, grouped into `sample`, `scale` and `all_train` stages |
 | `peak_memory_gb` | Reads the process's peak memory from the operating system |
 | `stratified_sample` | Takes a seeded sample with the same label balance |
-| `score` | Calculates metrics with Spam as the positive class, plus both error types |
 | `run_experiment` | Fits a `Pipeline`, scores it, and records costs |
-| `closest_training_similarity` | Finds each row's most similar training row |
-| `score_by_similarity_band` | Scores rows separately by that similarity |
+| `run_near_duplicate_check` | Measures similarity to training rows, and scores each band |
 | `run_stage` | Runs each experiment in its own process |
+
+In Milestone 3, the metric and similarity functions moved to [`evaluate.py`](../../backend/training/evaluate.py), so the final evaluation can share them.
 
 ## 5. Key implementation decisions
 
@@ -53,11 +53,11 @@ python -m training.feature_experiments --near-duplicates
 ## 6. Dependencies
 
 - **Packages:** `numpy`, `pandas`, `scipy`, `scikit-learn`, plus `ctypes` and `subprocess` from the standard library.
-- **Project files:** `preprocess.py`, `features.py`, `config.py`, `prepare_data.py`, and `write_report` from `inspect_dataset.py`.
+- **Project files:** `preprocess.py`, `features.py`, `evaluate.py`, `config.py`, `prepare_data.py`, and `write_report` from `inspect_dataset.py`.
 
 ## 7. How its output is used next
 
-Its results set Milestone 3's starting features, and Milestone 3 will report results by similarity band too. Decisions and results are explained in the [project explanation](../PROJECT_EXPLANATION.md#feature-extraction).
+Its results set Milestone 3's starting features, and the final evaluation reports results by similarity band too. Decisions and results are explained in the [project explanation](../PROJECT_EXPLANATION.md#feature-extraction).
 
 ## 8. Tests
 

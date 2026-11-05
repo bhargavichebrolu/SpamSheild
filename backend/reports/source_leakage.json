@@ -1,0 +1,488 @@
+{
+  "cross_style": {
+    "train_digits_only": {
+      "fit_seconds": 10.7,
+      "name": "train_digits_only",
+      "peak_memory_gb": 1.13,
+      "training_rows": 20196,
+      "training_spam_share": 0.4326,
+      "training_style": "digits_only",
+      "validation_by_style": {
+        "digits_only": {
+          "metrics": {
+            "accuracy": 0.9922,
+            "f1_spam": 0.9911,
+            "ham_flagged_as_spam": 16,
+            "precision_spam": 0.9859,
+            "recall_spam": 0.9964,
+            "spam_missed": 4,
+            "true_ham": 1420,
+            "true_spam": 1119
+          },
+          "roc_auc": 0.9989,
+          "rows": 2559,
+          "spam_share": 0.4388
+        },
+        "neither": {
+          "metrics": {
+            "accuracy": 0.8712,
+            "f1_spam": 0.9069,
+            "ham_flagged_as_spam": 368,
+            "precision_spam": 0.872,
+            "recall_spam": 0.9446,
+            "spam_missed": 147,
+            "true_ham": 976,
+            "true_spam": 2507
+          },
+          "roc_auc": 0.923,
+          "rows": 3998,
+          "spam_share": 0.6638
+        },
+        "placeholder_only": {
+          "metrics": {
+            "accuracy": 0.8503,
+            "f1_spam": 0.84,
+            "ham_flagged_as_spam": 1547,
+            "precision_spam": 0.7608,
+            "recall_spam": 0.9375,
+            "spam_missed": 328,
+            "true_ham": 5729,
+            "true_spam": 4921
+          },
+          "roc_auc": 0.9528,
+          "rows": 12525,
+          "spam_share": 0.4191
+        }
+      },
+      "words_removed": 0
+    },
+    "train_digits_only_remove_style_300_and_ham_300": {
+      "fit_seconds": 10.7,
+      "name": "train_digits_only_remove_style_300_and_ham_300",
+      "peak_memory_gb": 1.13,
+      "training_rows": 20196,
+      "training_spam_share": 0.4326,
+      "training_style": "digits_only",
+      "validation_by_style": {
+        "digits_only": {
+          "metrics": {
+            "accuracy": 0.9926,
+            "f1_spam": 0.9916,
+            "ham_flagged_as_spam": 15,
+            "precision_spam": 0.9868,
+            "recall_spam": 0.9964,
+            "spam_missed": 4,
+            "true_ham": 1421,
+            "true_spam": 1119
+          },
+          "roc_auc": 0.9989,
+          "rows": 2559,
+          "spam_share": 0.4388
+        },
+        "neither": {
+          "metrics": {
+            "accuracy": 0.8742,
+            "f1_spam": 0.9086,
+            "ham_flagged_as_spam": 349,
+            "precision_spam": 0.8775,
+            "recall_spam": 0.942,
+            "spam_missed": 154,
+            "true_ham": 995,
+            "true_spam": 2500
+          },
+          "roc_auc": 0.9262,
+          "rows": 3998,
+          "spam_share": 0.6638
+        },
+        "placeholder_only": {
+          "metrics": {
+            "accuracy": 0.8669,
+            "f1_spam": 0.857,
+            "ham_flagged_as_spam": 1412,
+            "precision_spam": 0.7796,
+            "recall_spam": 0.9514,
+            "spam_missed": 255,
+            "true_ham": 5864,
+            "true_spam": 4994
+          },
+          "roc_auc": 0.9599,
+          "rows": 12525,
+          "spam_share": 0.4191
+        }
+      },
+      "words_removed": 575
+    },
+    "train_placeholder_only": {
+      "fit_seconds": 58.8,
+      "name": "train_placeholder_only",
+      "peak_memory_gb": 1.27,
+      "training_rows": 100496,
+      "training_spam_share": 0.4199,
+      "training_style": "placeholder_only",
+      "validation_by_style": {
+        "digits_only": {
+          "metrics": {
+            "accuracy": 0.9637,
+            "f1_spam": 0.9589,
+            "ham_flagged_as_spam": 55,
+            "precision_spam": 0.9518,
+            "recall_spam": 0.9662,
+            "spam_missed": 38,
+            "true_ham": 1381,
+            "true_spam": 1085
+          },
+          "roc_auc": 0.9925,
+          "rows": 2559,
+          "spam_share": 0.4388
+        },
+        "neither": {
+          "metrics": {
+            "accuracy": 0.9177,
+            "f1_spam": 0.937,
+            "ham_flagged_as_spam": 122,
+            "precision_spam": 0.9525,
+            "recall_spam": 0.922,
+            "spam_missed": 207,
+            "true_ham": 1222,
+            "true_spam": 2447
+          },
+          "roc_auc": 0.9686,
+          "rows": 3998,
+          "spam_share": 0.6638
+        },
+        "placeholder_only": {
+          "metrics": {
+            "accuracy": 0.9962,
+            "f1_spam": 0.9955,
+            "ham_flagged_as_spam": 21,
+            "precision_spam": 0.996,
+            "recall_spam": 0.995,
+            "spam_missed": 26,
+            "true_ham": 7255,
+            "true_spam": 5223
+          },
+          "roc_auc": 0.9995,
+          "rows": 12525,
+          "spam_share": 0.4191
+        }
+      },
+      "words_removed": 0
+    },
+    "train_placeholder_only_matched_size": {
+      "fit_seconds": 11.6,
+      "name": "train_placeholder_only_matched_size",
+      "peak_memory_gb": 1.13,
+      "training_rows": 20196,
+      "training_spam_share": 0.4199,
+      "training_style": "placeholder_only",
+      "validation_by_style": {
+        "digits_only": {
+          "metrics": {
+            "accuracy": 0.9609,
+            "f1_spam": 0.9559,
+            "ham_flagged_as_spam": 62,
+            "precision_spam": 0.9459,
+            "recall_spam": 0.9662,
+            "spam_missed": 38,
+            "true_ham": 1374,
+            "true_spam": 1085
+          },
+          "roc_auc": 0.9936,
+          "rows": 2559,
+          "spam_share": 0.4388
+        },
+        "neither": {
+          "metrics": {
+            "accuracy": 0.9105,
+            "f1_spam": 0.9318,
+            "ham_flagged_as_spam": 150,
+            "precision_spam": 0.9422,
+            "recall_spam": 0.9216,
+            "spam_missed": 208,
+            "true_ham": 1194,
+            "true_spam": 2446
+          },
+          "roc_auc": 0.9614,
+          "rows": 3998,
+          "spam_share": 0.6638
+        },
+        "placeholder_only": {
+          "metrics": {
+            "accuracy": 0.9858,
+            "f1_spam": 0.9831,
+            "ham_flagged_as_spam": 99,
+            "precision_spam": 0.9812,
+            "recall_spam": 0.9849,
+            "spam_missed": 79,
+            "true_ham": 7177,
+            "true_spam": 5170
+          },
+          "roc_auc": 0.9981,
+          "rows": 12525,
+          "spam_share": 0.4191
+        }
+      },
+      "words_removed": 0
+    },
+    "train_placeholder_only_remove_style_300_and_ham_300": {
+      "fit_seconds": 63.5,
+      "name": "train_placeholder_only_remove_style_300_and_ham_300",
+      "peak_memory_gb": 1.26,
+      "training_rows": 100496,
+      "training_spam_share": 0.4199,
+      "training_style": "placeholder_only",
+      "validation_by_style": {
+        "digits_only": {
+          "metrics": {
+            "accuracy": 0.964,
+            "f1_spam": 0.9594,
+            "ham_flagged_as_spam": 57,
+            "precision_spam": 0.9502,
+            "recall_spam": 0.9688,
+            "spam_missed": 35,
+            "true_ham": 1379,
+            "true_spam": 1088
+          },
+          "roc_auc": 0.9922,
+          "rows": 2559,
+          "spam_share": 0.4388
+        },
+        "neither": {
+          "metrics": {
+            "accuracy": 0.9127,
+            "f1_spam": 0.933,
+            "ham_flagged_as_spam": 124,
+            "precision_spam": 0.9514,
+            "recall_spam": 0.9152,
+            "spam_missed": 225,
+            "true_ham": 1220,
+            "true_spam": 2429
+          },
+          "roc_auc": 0.9666,
+          "rows": 3998,
+          "spam_share": 0.6638
+        },
+        "placeholder_only": {
+          "metrics": {
+            "accuracy": 0.9959,
+            "f1_spam": 0.9951,
+            "ham_flagged_as_spam": 22,
+            "precision_spam": 0.9958,
+            "recall_spam": 0.9945,
+            "spam_missed": 29,
+            "true_ham": 7254,
+            "true_spam": 5220
+          },
+          "roc_auc": 0.9995,
+          "rows": 12525,
+          "spam_share": 0.4191
+        }
+      },
+      "words_removed": 575
+    }
+  },
+  "interpretation_note": "These results show dependence on signals found in this dataset. They are not proof of generalisation to unseen sources: the sources are unverified, the word lists are estimates, and all rows come from this one dataset.",
+  "marker_removal": {
+    "baseline_no_removal": {
+      "fit_seconds": 80.2,
+      "lists_used": [],
+      "name": "baseline_no_removal",
+      "peak_memory_gb": 1.45,
+      "removed_words_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "training_rows": 152653,
+      "validation": {
+        "metrics": {
+          "accuracy": 0.9905,
+          "f1_spam": 0.99,
+          "ham_flagged_as_spam": 93,
+          "precision_spam": 0.9897,
+          "recall_spam": 0.9903,
+          "spam_missed": 88,
+          "true_ham": 9963,
+          "true_spam": 8938
+        },
+        "roc_auc": 0.9987,
+        "rows": 19082,
+        "spam_share": 0.473
+      },
+      "vocabulary_size": 243182,
+      "words_removed": 0
+    },
+    "remove_ham_300": {
+      "fit_seconds": 80.6,
+      "lists_used": [
+        {
+          "list": "ham_leaning",
+          "top_words": 300
+        }
+      ],
+      "name": "remove_ham_300",
+      "peak_memory_gb": 1.44,
+      "removed_words_sha256": "b9a6fbf7ceea6195466c68a5e984b4e4eba78a82bff46e7242aabcbf551c2fd8",
+      "training_rows": 152653,
+      "validation": {
+        "metrics": {
+          "accuracy": 0.99,
+          "f1_spam": 0.9895,
+          "ham_flagged_as_spam": 98,
+          "precision_spam": 0.9891,
+          "recall_spam": 0.9898,
+          "spam_missed": 92,
+          "true_ham": 9958,
+          "true_spam": 8934
+        },
+        "roc_auc": 0.9987,
+        "rows": 19082,
+        "spam_share": 0.473
+      },
+      "vocabulary_size": 242882,
+      "words_removed": 300
+    },
+    "remove_ham_300_and_spam_300": {
+      "fit_seconds": 47.0,
+      "lists_used": [
+        {
+          "list": "ham_leaning",
+          "top_words": 300
+        },
+        {
+          "list": "spam_leaning",
+          "top_words": 300
+        }
+      ],
+      "name": "remove_ham_300_and_spam_300",
+      "peak_memory_gb": 1.44,
+      "removed_words_sha256": "fc489ffa4b76296558e0d41c48a1a8977f33c9beb41f5c71e4d1daccd1740288",
+      "training_rows": 152653,
+      "validation": {
+        "metrics": {
+          "accuracy": 0.9899,
+          "f1_spam": 0.9894,
+          "ham_flagged_as_spam": 100,
+          "precision_spam": 0.9889,
+          "recall_spam": 0.9898,
+          "spam_missed": 92,
+          "true_ham": 9956,
+          "true_spam": 8934
+        },
+        "roc_auc": 0.9987,
+        "rows": 19082,
+        "spam_share": 0.473
+      },
+      "vocabulary_size": 242582,
+      "words_removed": 600
+    },
+    "remove_style_1000": {
+      "fit_seconds": 79.6,
+      "lists_used": [
+        {
+          "list": "style_leaning",
+          "top_words": 1000
+        }
+      ],
+      "name": "remove_style_1000",
+      "peak_memory_gb": 1.44,
+      "removed_words_sha256": "1d69316543a6f68ac9f9d0af845809edc80d6b94471ce9f1076f3a1a6214fad3",
+      "training_rows": 152653,
+      "validation": {
+        "metrics": {
+          "accuracy": 0.9895,
+          "f1_spam": 0.9889,
+          "ham_flagged_as_spam": 108,
+          "precision_spam": 0.9881,
+          "recall_spam": 0.9897,
+          "spam_missed": 93,
+          "true_ham": 9948,
+          "true_spam": 8933
+        },
+        "roc_auc": 0.9987,
+        "rows": 19082,
+        "spam_share": 0.473
+      },
+      "vocabulary_size": 242182,
+      "words_removed": 1000
+    },
+    "remove_style_300": {
+      "fit_seconds": 75.5,
+      "lists_used": [
+        {
+          "list": "style_leaning",
+          "top_words": 300
+        }
+      ],
+      "name": "remove_style_300",
+      "peak_memory_gb": 1.44,
+      "removed_words_sha256": "c88cc92f6448ee48c673243c66f44a5dc16a48abe1d568299bef64c2fcdf5ed4",
+      "training_rows": 152653,
+      "validation": {
+        "metrics": {
+          "accuracy": 0.9899,
+          "f1_spam": 0.9894,
+          "ham_flagged_as_spam": 103,
+          "precision_spam": 0.9886,
+          "recall_spam": 0.9901,
+          "spam_missed": 89,
+          "true_ham": 9953,
+          "true_spam": 8937
+        },
+        "roc_auc": 0.9987,
+        "rows": 19082,
+        "spam_share": 0.473
+      },
+      "vocabulary_size": 242882,
+      "words_removed": 300
+    },
+    "remove_style_300_and_ham_300": {
+      "fit_seconds": 73.2,
+      "lists_used": [
+        {
+          "list": "style_leaning",
+          "top_words": 300
+        },
+        {
+          "list": "ham_leaning",
+          "top_words": 300
+        }
+      ],
+      "name": "remove_style_300_and_ham_300",
+      "peak_memory_gb": 1.44,
+      "removed_words_sha256": "c619e08c68aadd5c337655f0b41320fa34cbbbe9759421eac470f8af36475885",
+      "training_rows": 152653,
+      "validation": {
+        "metrics": {
+          "accuracy": 0.9892,
+          "f1_spam": 0.9886,
+          "ham_flagged_as_spam": 107,
+          "precision_spam": 0.9882,
+          "recall_spam": 0.989,
+          "spam_missed": 99,
+          "true_ham": 9949,
+          "true_spam": 8927
+        },
+        "roc_auc": 0.9987,
+        "rows": 19082,
+        "spam_share": 0.473
+      },
+      "vocabulary_size": 242607,
+      "words_removed": 575
+    }
+  },
+  "model": {
+    "features": "word_1",
+    "model": "linear_svm",
+    "setting": {
+      "C": 10.0
+    }
+  },
+  "removal_decision": {
+    "adopt": true,
+    "candidate": "remove_style_300_and_ham_300",
+    "cross_style_f1_change": {
+      "digits_to_placeholder": 0.017,
+      "placeholder_to_digits": 0.0005
+    },
+    "f1_margin": 0.002,
+    "validation_f1_drop": 0.0014
+  },
+  "split_used": "train to fit, validation to score"
+}

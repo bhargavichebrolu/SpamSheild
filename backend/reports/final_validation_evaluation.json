@@ -1,0 +1,115 @@
+{
+  "class_results": {
+    "Ham": {
+      "precision": 0.9901,
+      "recall": 0.9894,
+      "rows": 10056,
+      "share_wrongly_flagged_as_spam": 0.0106
+    },
+    "Spam": {
+      "precision": 0.9882,
+      "recall": 0.989,
+      "rows": 9026,
+      "share_missed": 0.011
+    }
+  },
+  "metrics_by_similarity_band": {
+    "0.00_to_0.80": {
+      "metrics": {
+        "accuracy": 0.9716,
+        "f1_spam": 0.9711,
+        "ham_flagged_as_spam": 94,
+        "precision_spam": 0.9711,
+        "recall_spam": 0.9711,
+        "spam_missed": 94,
+        "true_ham": 3267,
+        "true_spam": 3155
+      },
+      "rows": 6610,
+      "share_of_rows": 0.3464,
+      "spam_share": 0.4915
+    },
+    "0.80_to_0.90": {
+      "metrics": {
+        "accuracy": 0.9968,
+        "f1_spam": 0.9965,
+        "ham_flagged_as_spam": 7,
+        "precision_spam": 0.9938,
+        "recall_spam": 0.9991,
+        "spam_missed": 1,
+        "true_ham": 1360,
+        "true_spam": 1125
+      },
+      "rows": 2493,
+      "share_of_rows": 0.1306,
+      "spam_share": 0.4517
+    },
+    "0.90_to_0.95": {
+      "metrics": {
+        "accuracy": 0.9987,
+        "f1_spam": 0.9982,
+        "ham_flagged_as_spam": 2,
+        "precision_spam": 0.9986,
+        "recall_spam": 0.9978,
+        "spam_missed": 3,
+        "true_ham": 2393,
+        "true_spam": 1389
+      },
+      "rows": 3787,
+      "share_of_rows": 0.1985,
+      "spam_share": 0.3676
+    },
+    "0.95_and_above": {
+      "metrics": {
+        "accuracy": 0.9992,
+        "f1_spam": 0.9992,
+        "ham_flagged_as_spam": 4,
+        "precision_spam": 0.9988,
+        "recall_spam": 0.9997,
+        "spam_missed": 1,
+        "true_ham": 2929,
+        "true_spam": 3258
+      },
+      "rows": 6192,
+      "share_of_rows": 0.3245,
+      "spam_share": 0.5263
+    }
+  },
+  "model_version": "1.0.0",
+  "overall_metrics": {
+    "accuracy": 0.9892,
+    "f1_spam": 0.9886,
+    "ham_flagged_as_spam": 107,
+    "precision_spam": 0.9882,
+    "recall_spam": 0.989,
+    "spam_missed": 99,
+    "true_ham": 9949,
+    "true_spam": 8927
+  },
+  "peak_memory_gb": 1.35,
+  "pipeline_sha256": "ed9f16df062afe7bb4ba3dd1acb6473d5119aa643ae1bcdf9d042279de788b2c",
+  "roc_auc": 0.9987,
+  "rows": 19082,
+  "share_of_rows_at_or_above_similarity": {
+    "Ham": {
+      "0.80": 0.6658,
+      "0.90": 0.5298,
+      "0.95": 0.2917,
+      "0.99": 0.0676
+    },
+    "Spam": {
+      "0.80": 0.64,
+      "0.90": 0.5153,
+      "0.95": 0.3611,
+      "0.99": 0.1528
+    }
+  },
+  "similarity_method": "closest training row, cosine similarity of word_1 TF-IDF fitted on training rows",
+  "single_message_latency": {
+    "median_ms": 1.49,
+    "p95_ms": 3.07,
+    "rows": 200
+  },
+  "spam_share": 0.473,
+  "split": "validation"
+}

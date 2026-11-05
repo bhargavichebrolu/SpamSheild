@@ -4,12 +4,14 @@ An explainable email spam classifier, planned as an end-to-end machine learning 
 
 ## Project status
 
-**Milestones 1 and 2 of 6 are complete.** There is no final model, API or web interface yet. The only scores so far are validation results from feature experiments, so they aren't final model performance.
+**Milestone 3 of 6 is implemented and awaiting review.** A final model has been trained, saved and evaluated. There is no API or web interface yet.
 
 | Status | Work |
 |---|---|
-| Done | Python environment, dataset inspection, preprocessing, leakage-safe splits, TF-IDF feature experiments, tests |
-| Planned | Model comparison and final evaluation, API, web application, final verification |
+| Done | Python environment, dataset inspection, preprocessing, leakage-safe splits, feature experiments, model comparison, source-leakage experiment, final pipeline and evaluation, tests |
+| Planned | FastAPI backend, working React and TypeScript website, final verification |
+
+**Test result:** a Linear SVM reached F1 0.9894 for Spam on this dataset's held-out test split, or 0.9727 on messages with no close match in training. **These scores don't show real-world performance.** When trained on one number style and scored on another, as a stand-in for an unfamiliar source, F1 fell to 0.8400 and 21.3% of legitimate messages were flagged. See the [model card](docs/model-card.md).
 
 The dataset's licence is not verified, so the raw data is not included or redistributed here. See the [dataset card](docs/dataset-card.md).
 
@@ -17,6 +19,8 @@ The dataset's licence is not verified, so the raw data is not included or redist
 
 - [Product requirements](docs/PRD.md)
 - [Project explanation](docs/PROJECT_EXPLANATION.md)
+- [Model card](docs/model-card.md)
+- [Architecture](docs/architecture.md)
 - [Dataset card](docs/dataset-card.md)
 - [Development log](docs/DEVELOPMENT_LOG.md)
 - [Source-file explanations](docs/file-explanations/)
@@ -72,6 +76,26 @@ python -m training.feature_experiments --stage all_train
 python -m training.feature_experiments --near-duplicates
 ```
 
+Train and check the final model, also from `backend`. `train_final` replaces any saved model. The saved file isn't in Git, so a fresh copy of the repository needs these steps:
+
+```powershell
+python -m training.compare_models
+python -m training.source_markers
+python -m training.source_leakage
+python -m training.train_final
+python -m training.train_final --verify-reproducible
+python -m training.train_final --verify-fingerprint
+python -m training.final_evaluation --split validation
+```
+
+Load the saved model and classify a message, from `backend`:
+
+```powershell
+python -c "from app.ml.predict import load_pipeline; print(load_pipeline().predict(['Example message text']))"
+```
+
+The test split can be evaluated only once, so `--split test` refuses to run while its report exists. The [model card](docs/model-card.md#reproducibility) explains this.
+
 ## Repository layout
 
 ```text
@@ -82,9 +106,10 @@ spamshield-ai/
 │   │   ├── README.md              How to get the dataset
 │   │   ├── processed/             Generated split file (not committed)
 │   │   └── raw/                   Local dataset file (not committed)
+│   ├── models/                    Saved model (not committed) and its metadata
 │   ├── reports/                   Generated results
 │   ├── tests/                     Automated tests
-│   ├── training/                  Inspection, data preparation and experiments
+│   ├── training/                  Inspection, data preparation, experiments and training
 │   ├── pytest.ini
 │   └── requirements.txt
 ├── docs/                          Requirements, explanations and logs

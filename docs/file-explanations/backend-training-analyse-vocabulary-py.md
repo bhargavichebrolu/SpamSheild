@@ -41,7 +41,7 @@ The report isn't in Git, because its words can include people's surnames. Run it
 
 ## 7. How its output is used next
 
-Milestone 3's source-leakage experiment can draw its word list from this report. The analysis also found the mismatch in my first number placeholder, because joined forms such as `shaescapenumber` appeared in its results.
+[`source_markers.py`](../../backend/training/source_markers.py) reuses its `log_odds_ratio` to build the source-leakage word lists. The analysis also found the mismatch in my first number placeholder, because joined forms such as `shaescapenumber` appeared in its results.
 
 ## 8. Tests
 

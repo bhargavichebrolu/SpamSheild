@@ -1,0 +1,41 @@
+{
+  "classes": [
+    "Ham",
+    "Spam"
+  ],
+  "dataset_sha256": "e7f57b47676e456ebf9866dc1fd311a93e923458c76a22b6ea5c9439f4da58aa",
+  "feature_settings": {
+    "analyzer": "'word'",
+    "max_df": "0.95",
+    "min_df": "2",
+    "ngram_range": "(1, 1)",
+    "sublinear_tf": "True"
+  },
+  "features": "word_1",
+  "model": "linear_svm",
+  "model_content_sha256": "6f5135d9e9e3832ef8513607fe645661abfc84096c983ba7430378652a10c2e2",
+  "model_version": "1.0.0",
+  "pipeline_file": "spamshield_pipeline.joblib",
+  "pipeline_sha256": "ed9f16df062afe7bb4ba3dd1acb6473d5119aa643ae1bcdf9d042279de788b2c",
+  "random_seed": 42,
+  "removed_words": {
+    "count": 575,
+    "rule": "remove_style_300_and_ham_300",
+    "sha256": "c619e08c68aadd5c337655f0b41320fa34cbbbe9759421eac470f8af36475885"
+  },
+  "setting": {
+    "C": 10.0
+  },
+  "split_assignments_sha256": "11d4250af2fcbbdd095e0f3d9366f1dba88ea30ccd5c666cef7250fb5dfb14a3",
+  "training_rows": 152653,
+  "training_split": "train",
+  "versions": {
+    "joblib": "1.6.0",
+    "numpy": "2.5.4",
+    "pandas": "3.1.1",
+    "python": "3.14.3",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1"
+  },
+  "vocabulary_size": 242607
+}

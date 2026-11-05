@@ -34,7 +34,7 @@ It tests the behaviour that later milestones depend on, using small made-up text
 
 - **Settings are loosened in some tests:** `min_df` and `max_df` are made less strict, because a handful of sentences can't meet the real thresholds. The tests that need this check how the vectoriser behaves, not those thresholds.
 - **`monkeypatch` replaces `load_split`:** a stand-in records which splits are requested, proving the behaviour without needing real data.
-- **Save and reload uses `pickle`:** Milestone 3 will use `joblib`, which builds on the same mechanism. A full pipeline test belongs with that work.
+- **Save and reload uses `pickle` here:** the saved model uses `joblib`, which builds on the same mechanism, and is tested separately.
 
 ## 6. Dependencies
 
@@ -42,7 +42,7 @@ It tests the behaviour that later milestones depend on, using small made-up text
 
 ## 7. How its output is used next
 
-Passing tests are part of Milestone 2's acceptance check. Milestone 3 will add tests for saving and reloading a full pipeline.
+Passing tests are part of Milestone 2's acceptance check. Saving and reloading a full pipeline is tested in [`test_final_pipeline.py`](../../backend/tests/test_final_pipeline.py).
 
 ## 8. Tests and how to run them
 

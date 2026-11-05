@@ -4,7 +4,7 @@
 
 **Status:** Complete. The project owner chose to proceed with the licence marked "not verified" and the Kaggle URL recorded as the reported source.
 
-**Commit:** Not committed yet.
+**Commit:** `bc3cdfd`
 
 ### Work completed
 
@@ -54,13 +54,13 @@ The script also found a result the earlier check didn't measure: 5 near-identica
 
 ### Remaining work
 
-- Project owner to review and commit.
+None.
 
 ## 2026-11-05: Milestone 2, data analysis, preprocessing and features
 
-**Status:** Implemented and awaiting review.
+**Status:** Complete.
 
-**Commit:** Not committed yet.
+**Commit:** `aad0375`
 
 ### Work completed
 
@@ -114,5 +114,67 @@ Full results are in [`feature_experiments.json`](../backend/reports/feature_expe
 
 ### Remaining work
 
+None. Milestone 3 continued this work.
+
+## 2026-11-05: Milestone 3, model training, comparison and evaluation
+
+**Status:** Implemented and awaiting review.
+
+**Commit:** Not committed yet.
+
+### Work completed
+
+- Committed Milestones 1 and 2 separately, after checking the author, staged files and history.
+- Compared three models with three settings each, on two feature sets (18 runs), using one split.
+- Derived source-marker word lists from training data, and ran marker-removal and cross-style experiments on validation data.
+- Froze a final pipeline, checked reproducibility, and rehearsed the evaluation on validation data.
+- Evaluated the frozen pipeline once on the test split.
+- Added a model-content fingerprint, recorded separately from the file hash, without retraining or changing the frozen model.
+- Wrote 83 new tests, the model card and the architecture document, and updated the other documentation.
+
+### Important decisions
+
+| Decision | Reason |
+|---|---|
+| Fix the selection rule before running any comparison | Stops a rule being adjusted to fit a favoured result |
+| Linear SVM, single words, `C=10` | Result of that rule: within the F1 tie margin, with the fewest legitimate messages flagged |
+| Don't overrule the rule for bigrams' higher F1 | Their F1 lead was inside the tie margin, and they flagged more legitimate messages |
+| Three settings per model, using one shared matrix | Keeps tuning small and cheap, as the project owner required |
+| Remove 575 likely source-marker words | A rule fixed in advance was met, narrowly. The caveats are in the model card. |
+| Train the final model on the training split only | So the test result describes exactly the saved file |
+| Add cross-style experiments | Random splits can't show dependence on source, and number style is the available stand-in |
+| Keep the saved model and marker lists out of Git | They contain words that can include surnames, and come from a dataset with an unverified licence |
+| Enforce one test run in code | A rule that can't be forgotten |
+| Add a content fingerprint alongside the file hash | The file's bytes differ between identical retrains, so a file hash alone can't show two files hold the same model. Approved by the project owner. |
+| Fingerprint preprocessing by its results on sample text | Catches behaviour changes, while editing a comment doesn't change the fingerprint |
+
+### Problems encountered
+
+| Problem | Cause | Resolution |
+|---|---|---|
+| Two training runs gave different file hashes | Likely a memory address stored on the vectoriser. I first guessed Python's set ordering, then found the address in scikit-learn's source. Neither is proved. | Added `--verify-reproducible`, which confirmed identical vocabulary, IDF values, removed words, weights and validation predictions |
+| I gave slightly wrong totals in a cross-style summary during the work | I quoted Ham counts from memory instead of the report | Recalculated all counts from the report before documenting them |
+| Marker removal met its rule only narrowly | One cross-style improvement was only 0.0005, which is within noise | Followed the rule, and documented the caveats |
+| The fingerprint crashed on some callables | Built-ins such as `str.upper` have no `__module__`. A test found this. The project's own preprocessor wasn't affected. | Fell back to the callable's type for the module name |
+
+### Tests and actual results
+
+| Check | Result |
+|---|---|
+| `python -m pytest backend` | 162 passed |
+| Retraining with `--verify-reproducible` | No learned values differ; same content fingerprint; identical predictions on 19,082 validation rows |
+| Reloading in two processes with different hash seeds | Same fingerprint, and identical predictions on 19,082 validation rows |
+| Frozen file while adding the fingerprint | Same hash before and after (`ed9f16df…212e862`), with no retraining |
+| Validation rehearsal vs experiment | Identical: F1 0.9886, 107 flagged, 99 missed |
+| Loading the real model with no training code | Worked, with no `training` modules imported |
+| Second test evaluation attempt | Refused, as designed |
+
+**Final test result, from its one run:** accuracy 0.9900, precision 0.9899, recall 0.9889, F1 0.9894, ROC-AUC 0.9987, with 91 of 10,057 Ham flagged and 100 of 9,025 Spam missed. F1 is 0.9727 on the 6,684 rows with no close training match.
+
+**The strongest warning:** trained on digit-style rows and scored on placeholder-style rows, F1 is 0.8400, with 21.3% of Ham flagged. This doesn't prove how the model behaves on unseen sources, but it shows random-split scores can hide a real weakness.
+
+Experiments were run on an i7-12650H with 15.7 GB RAM, with other applications open. Highest peak memory was 2.77 GB, in the bigram comparison. The final model peaked at 1.35 GB during evaluation.
+
+### Remaining work
+
 - Project owner to review and commit.
-- Milestone 3: compare candidate models, run the source-leakage experiment, evaluate once on the test split, and save the selected pipeline.

@@ -29,7 +29,6 @@ import numpy as np
 import pandas as pd
 from scipy import sparse
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, precision_recall_fscore_support
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
@@ -42,6 +41,12 @@ from app.ml.preprocess import (
     unify_url_scheme,
 )
 from training.config import RANDOM_SEED, REPORTS_DIR
+from training.evaluate import (
+    closest_training_similarity,
+    score,
+    score_by_similarity_band,
+    shares_at_or_above,
+)
 from training.features import build_vectorizer
 from training.inspect_dataset import write_report
 from training.prepare_data import load_split
@@ -51,8 +56,6 @@ NEAR_DUPLICATES_PATH = REPORTS_DIR / "near_duplicate_check.json"
 
 SAMPLE_TRAIN_ROWS = 10_000
 SAMPLE_VALIDATION_ROWS = 5_000
-NEAR_DUPLICATE_BATCH_ROWS = 100
-SIMILARITY_THRESHOLDS = (0.80, 0.90, 0.95, 0.99)
 
 
 def _without_truncation(text: str) -> str:
@@ -159,26 +162,6 @@ def matrix_size_mb(matrix: sparse.csr_matrix) -> float:
     return round(size / 1024**2, 1)
 
 
-def score(labels: pd.Series, predictions: np.ndarray) -> dict:
-    """Return metrics with Spam as the positive class, and the two error types."""
-    precision, recall, f1, _ = precision_recall_fscore_support(
-        labels, predictions, pos_label="Spam", average="binary", zero_division=0
-    )
-    (true_ham, false_positive), (false_negative, true_spam) = confusion_matrix(
-        labels, predictions, labels=["Ham", "Spam"]
-    )
-    return {
-        "accuracy": round(float(accuracy_score(labels, predictions)), 4),
-        "precision_spam": round(float(precision), 4),
-        "recall_spam": round(float(recall), 4),
-        "f1_spam": round(float(f1), 4),
-        "ham_flagged_as_spam": int(false_positive),
-        "spam_missed": int(false_negative),
-        "true_ham": int(true_ham),
-        "true_spam": int(true_spam),
-    }
-
-
 def run_experiment(experiment: Experiment, train: pd.DataFrame, validation: pd.DataFrame) -> dict:
     """Fit on the training rows and score on the validation rows."""
     train = stratified_sample(train, experiment.train_rows)
@@ -217,59 +200,6 @@ def save_result(result: dict, path: Path = RESULTS_PATH) -> None:
     results = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     results[result["name"]] = result
     write_report(results, path)
-
-
-def closest_training_similarity(
-    rows: sparse.csr_matrix,
-    train_matrix: sparse.csr_matrix,
-    batch_rows: int = NEAR_DUPLICATE_BATCH_ROWS,
-) -> np.ndarray:
-    """Return each row's cosine similarity to its most similar training row.
-
-    TF-IDF rows have unit length, so multiplying them gives their cosine similarity.
-    Working in batches limits how much memory the multiplication needs.
-    """
-    closest: list[np.ndarray] = []
-    for start in range(0, rows.shape[0], batch_rows):
-        similarities = rows[start : start + batch_rows] @ train_matrix.T
-        closest.append(similarities.max(axis=1).toarray().ravel())
-    return np.concatenate(closest) if closest else np.empty(0)
-
-
-def shares_at_or_above(
-    similarity: np.ndarray,
-    thresholds: tuple[float, ...] = SIMILARITY_THRESHOLDS,
-) -> dict[str, float]:
-    """Return the share of rows whose closest training row reaches each similarity."""
-    return {f"{threshold:.2f}": round(float((similarity >= threshold).mean()), 4) for threshold in thresholds}
-
-
-def score_by_similarity_band(
-    similarity: np.ndarray,
-    labels: pd.Series,
-    predictions: np.ndarray,
-) -> dict[str, dict]:
-    """Score rows separately by how similar they are to their closest training row.
-
-    The lowest band shows performance on messages with no close match in training.
-    """
-    edges = (0.0, *SIMILARITY_THRESHOLDS[:3], np.inf)
-    names = [
-        f"{low:.2f}_to_{high:.2f}" if np.isfinite(high) else f"{low:.2f}_and_above"
-        for low, high in zip(edges, edges[1:])
-    ]
-    bands = {}
-    label_values = labels.to_numpy()
-    for name, low, high in zip(names, edges, edges[1:]):
-        mask = (similarity >= low) & (similarity < high)
-        band_labels = pd.Series(label_values[mask])
-        bands[name] = {
-            "rows": int(mask.sum()),
-            "share_of_rows": round(float(mask.mean()), 4),
-            "spam_share": round(float((band_labels == "Spam").mean()), 4) if mask.any() else None,
-            "metrics": score(band_labels, predictions[mask]) if mask.any() else None,
-        }
-    return bands
 
 
 def run_near_duplicate_check() -> dict:

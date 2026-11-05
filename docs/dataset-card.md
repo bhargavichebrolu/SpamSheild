@@ -126,11 +126,11 @@ The splits are stratified by label, with random seed 42.
 | Validation | 19,082 | 10,056 | 9,026 | 47.3% |
 | Test | 19,082 | 10,057 | 9,025 | 47.3% |
 
-No preprocessed text appears in more than one split. Code can't load the test split without explicitly asking for it, and no experiment or word analysis has done so. The format analysis and cleaning read every row before the split, including rows that became test data, but they score no model and choose no features.
+No preprocessed text appears in more than one split. Code can't load the test split without explicitly asking for it, and only the single final evaluation has done so. The format analysis and cleaning read every row before the split, including rows that became test data, but they score no model and choose no features.
 
 ## Known limitations and open questions
 
-- **Likely source leakage:** on training data, some words strongly separate the labels but may identify a source rather than spam. Examples are `enron` (Ham 27.4%, Spam 5.1%), `enrononline` (1.2%, 0.0%), and software-list terms such as `viewcvs` and `websvn` (1.9%, 0.0%). Real spam words such as `cialis` (0.0%, 4.0%) appear too. Milestone 3 will measure how much the model depends on source-related words.
+- **Likely source leakage:** on training data, some words strongly separate the labels but may identify a source rather than spam. Examples are `enron` (Ham 27.4%, Spam 5.1%), `enrononline` (1.2%, 0.0%), and software-list terms such as `viewcvs` and `websvn` (1.9%, 0.0%). Real spam words such as `cialis` (0.0%, 4.0%) appear too. A model trained on one number style scored much lower on the other, as the [model card](model-card.md#source-leakage) explains.
 - **Template similarity:** removing identical text doesn't remove templates. On validation data, 53.0% of Ham and 51.5% of Spam rows have a training row with cosine similarity of at least 0.90. Scores on these rows are higher, as explained in the [project explanation](PROJECT_EXPLANATION.md#leakage-safeguards).
 - **Different from real email:** the text is lowercase with placeholders, and `escapelong` follows a rule this project can't reproduce. Preprocessing narrows the gap but can't close it.
 - **Unknown representativeness:** the 47.3% spam share reflects this dataset, not real inboxes. Results may not carry over to other kinds of email.
@@ -143,4 +143,5 @@ No preprocessed text appears in more than one split. Code can't load the test sp
 - Committed reports contain aggregate statistics only, with no email text.
 - Example records appear only in the terminal, using `--show-examples`.
 - The split file holds row numbers and split names, not text, and is excluded from Git.
-- The vocabulary report is excluded from Git because its words can include people's surnames.
+- The vocabulary report and source-marker lists are excluded from Git because their words can include people's surnames.
+- The saved model isn't committed. It contains those removed words and was built from this dataset, whose licence is not verified.

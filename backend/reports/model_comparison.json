@@ -1,0 +1,539 @@
+{
+  "runs": {
+    "word_1": {
+      "feature_settings": {
+        "analyzer": "'word'",
+        "max_df": "0.95",
+        "min_df": "2",
+        "ngram_range": "(1, 1)",
+        "sublinear_tf": "True"
+      },
+      "features": "word_1",
+      "peak_memory_gb": 1.47,
+      "results": [
+        {
+          "classifier_fit_seconds": 0.7,
+          "classifier_predict_seconds": 0.06,
+          "converged": true,
+          "features": "word_1",
+          "metrics": {
+            "accuracy": 0.9732,
+            "f1_spam": 0.9713,
+            "ham_flagged_as_spam": 121,
+            "precision_spam": 0.9862,
+            "recall_spam": 0.9568,
+            "spam_missed": 390,
+            "true_ham": 9935,
+            "true_spam": 8636
+          },
+          "model": "multinomial_nb",
+          "roc_auc": 0.9971,
+          "setting": {
+            "alpha": 0.01
+          },
+          "single_message_latency": {
+            "median_ms": 5.66,
+            "p95_ms": 9.76,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 0.9,
+          "classifier_predict_seconds": 0.04,
+          "converged": true,
+          "features": "word_1",
+          "metrics": {
+            "accuracy": 0.9707,
+            "f1_spam": 0.9685,
+            "ham_flagged_as_spam": 130,
+            "precision_spam": 0.9851,
+            "recall_spam": 0.9524,
+            "spam_missed": 430,
+            "true_ham": 9926,
+            "true_spam": 8596
+          },
+          "model": "multinomial_nb",
+          "roc_auc": 0.9966,
+          "setting": {
+            "alpha": 0.1
+          },
+          "single_message_latency": {
+            "median_ms": 6.76,
+            "p95_ms": 13.92,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 0.7,
+          "classifier_predict_seconds": 0.03,
+          "converged": true,
+          "features": "word_1",
+          "metrics": {
+            "accuracy": 0.9624,
+            "f1_spam": 0.9592,
+            "ham_flagged_as_spam": 115,
+            "precision_spam": 0.9865,
+            "recall_spam": 0.9333,
+            "spam_missed": 602,
+            "true_ham": 9941,
+            "true_spam": 8424
+          },
+          "model": "multinomial_nb",
+          "roc_auc": 0.9954,
+          "setting": {
+            "alpha": 1.0
+          },
+          "single_message_latency": {
+            "median_ms": 5.2,
+            "p95_ms": 8.3,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 8.6,
+          "classifier_predict_seconds": 0.01,
+          "converged": true,
+          "features": "word_1",
+          "metrics": {
+            "accuracy": 0.9683,
+            "f1_spam": 0.967,
+            "ham_flagged_as_spam": 415,
+            "precision_spam": 0.9551,
+            "recall_spam": 0.9791,
+            "spam_missed": 189,
+            "true_ham": 9641,
+            "true_spam": 8837
+          },
+          "model": "logistic_regression",
+          "roc_auc": 0.9944,
+          "setting": {
+            "C": 0.1
+          },
+          "single_message_latency": {
+            "median_ms": 1.44,
+            "p95_ms": 4.88,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 10.5,
+          "classifier_predict_seconds": 0.02,
+          "converged": true,
+          "features": "word_1",
+          "metrics": {
+            "accuracy": 0.9808,
+            "f1_spam": 0.9799,
+            "ham_flagged_as_spam": 242,
+            "precision_spam": 0.9735,
+            "recall_spam": 0.9863,
+            "spam_missed": 124,
+            "true_ham": 9814,
+            "true_spam": 8902
+          },
+          "model": "logistic_regression",
+          "roc_auc": 0.9974,
+          "setting": {
+            "C": 1.0
+          },
+          "single_message_latency": {
+            "median_ms": 1.43,
+            "p95_ms": 6.1,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 13.0,
+          "classifier_predict_seconds": 0.01,
+          "converged": true,
+          "features": "word_1",
+          "metrics": {
+            "accuracy": 0.9889,
+            "f1_spam": 0.9883,
+            "ham_flagged_as_spam": 124,
+            "precision_spam": 0.9863,
+            "recall_spam": 0.9904,
+            "spam_missed": 87,
+            "true_ham": 9932,
+            "true_spam": 8939
+          },
+          "model": "logistic_regression",
+          "roc_auc": 0.9987,
+          "setting": {
+            "C": 10.0
+          },
+          "single_message_latency": {
+            "median_ms": 1.34,
+            "p95_ms": 3.62,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 1.8,
+          "classifier_predict_seconds": 0.01,
+          "converged": true,
+          "features": "word_1",
+          "metrics": {
+            "accuracy": 0.9821,
+            "f1_spam": 0.9812,
+            "ham_flagged_as_spam": 234,
+            "precision_spam": 0.9744,
+            "recall_spam": 0.9881,
+            "spam_missed": 107,
+            "true_ham": 9822,
+            "true_spam": 8919
+          },
+          "model": "linear_svm",
+          "roc_auc": 0.9977,
+          "setting": {
+            "C": 0.1
+          },
+          "single_message_latency": {
+            "median_ms": 1.26,
+            "p95_ms": 3.13,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 2.6,
+          "classifier_predict_seconds": 0.01,
+          "converged": true,
+          "features": "word_1",
+          "metrics": {
+            "accuracy": 0.9905,
+            "f1_spam": 0.99,
+            "ham_flagged_as_spam": 99,
+            "precision_spam": 0.9891,
+            "recall_spam": 0.9909,
+            "spam_missed": 82,
+            "true_ham": 9957,
+            "true_spam": 8944
+          },
+          "model": "linear_svm",
+          "roc_auc": 0.9988,
+          "setting": {
+            "C": 1.0
+          },
+          "single_message_latency": {
+            "median_ms": 1.24,
+            "p95_ms": 2.95,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 9.8,
+          "classifier_predict_seconds": 0.02,
+          "converged": true,
+          "features": "word_1",
+          "metrics": {
+            "accuracy": 0.9905,
+            "f1_spam": 0.99,
+            "ham_flagged_as_spam": 93,
+            "precision_spam": 0.9897,
+            "recall_spam": 0.9903,
+            "spam_missed": 88,
+            "true_ham": 9963,
+            "true_spam": 8938
+          },
+          "model": "linear_svm",
+          "roc_auc": 0.9987,
+          "setting": {
+            "C": 10.0
+          },
+          "single_message_latency": {
+            "median_ms": 1.34,
+            "p95_ms": 3.67,
+            "rows": 200
+          }
+        }
+      ],
+      "rows_used": {
+        "train": 152653,
+        "validation": 19082
+      },
+      "vectorizer_fit_seconds": 94.4,
+      "vocabulary_size": 243182
+    },
+    "word_1_2": {
+      "feature_settings": {
+        "analyzer": "'word'",
+        "max_df": "0.95",
+        "max_features": "300000",
+        "min_df": "3",
+        "ngram_range": "(1, 2)",
+        "sublinear_tf": "True"
+      },
+      "features": "word_1_2",
+      "peak_memory_gb": 2.77,
+      "results": [
+        {
+          "classifier_fit_seconds": 0.9,
+          "classifier_predict_seconds": 0.05,
+          "converged": true,
+          "features": "word_1_2",
+          "metrics": {
+            "accuracy": 0.9722,
+            "f1_spam": 0.9701,
+            "ham_flagged_as_spam": 101,
+            "precision_spam": 0.9884,
+            "recall_spam": 0.9525,
+            "spam_missed": 429,
+            "true_ham": 9955,
+            "true_spam": 8597
+          },
+          "model": "multinomial_nb",
+          "roc_auc": 0.9976,
+          "setting": {
+            "alpha": 0.01
+          },
+          "single_message_latency": {
+            "median_ms": 5.73,
+            "p95_ms": 10.14,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 0.8,
+          "classifier_predict_seconds": 0.05,
+          "converged": true,
+          "features": "word_1_2",
+          "metrics": {
+            "accuracy": 0.9716,
+            "f1_spam": 0.9695,
+            "ham_flagged_as_spam": 113,
+            "precision_spam": 0.987,
+            "recall_spam": 0.9526,
+            "spam_missed": 428,
+            "true_ham": 9943,
+            "true_spam": 8598
+          },
+          "model": "multinomial_nb",
+          "roc_auc": 0.9973,
+          "setting": {
+            "alpha": 0.1
+          },
+          "single_message_latency": {
+            "median_ms": 5.16,
+            "p95_ms": 8.75,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 0.8,
+          "classifier_predict_seconds": 0.06,
+          "converged": true,
+          "features": "word_1_2",
+          "metrics": {
+            "accuracy": 0.9697,
+            "f1_spam": 0.9673,
+            "ham_flagged_as_spam": 114,
+            "precision_spam": 0.9869,
+            "recall_spam": 0.9486,
+            "spam_missed": 464,
+            "true_ham": 9942,
+            "true_spam": 8562
+          },
+          "model": "multinomial_nb",
+          "roc_auc": 0.997,
+          "setting": {
+            "alpha": 1.0
+          },
+          "single_message_latency": {
+            "median_ms": 5.29,
+            "p95_ms": 9.76,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 11.7,
+          "classifier_predict_seconds": 0.03,
+          "converged": true,
+          "features": "word_1_2",
+          "metrics": {
+            "accuracy": 0.9699,
+            "f1_spam": 0.9686,
+            "ham_flagged_as_spam": 388,
+            "precision_spam": 0.958,
+            "recall_spam": 0.9794,
+            "spam_missed": 186,
+            "true_ham": 9668,
+            "true_spam": 8840
+          },
+          "model": "logistic_regression",
+          "roc_auc": 0.9952,
+          "setting": {
+            "C": 0.1
+          },
+          "single_message_latency": {
+            "median_ms": 1.43,
+            "p95_ms": 3.95,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 16.6,
+          "classifier_predict_seconds": 0.03,
+          "converged": true,
+          "features": "word_1_2",
+          "metrics": {
+            "accuracy": 0.9834,
+            "f1_spam": 0.9826,
+            "ham_flagged_as_spam": 212,
+            "precision_spam": 0.9768,
+            "recall_spam": 0.9885,
+            "spam_missed": 104,
+            "true_ham": 9844,
+            "true_spam": 8922
+          },
+          "model": "logistic_regression",
+          "roc_auc": 0.998,
+          "setting": {
+            "C": 1.0
+          },
+          "single_message_latency": {
+            "median_ms": 1.55,
+            "p95_ms": 5.98,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 25.9,
+          "classifier_predict_seconds": 0.03,
+          "converged": true,
+          "features": "word_1_2",
+          "metrics": {
+            "accuracy": 0.9903,
+            "f1_spam": 0.9898,
+            "ham_flagged_as_spam": 125,
+            "precision_spam": 0.9863,
+            "recall_spam": 0.9934,
+            "spam_missed": 60,
+            "true_ham": 9931,
+            "true_spam": 8966
+          },
+          "model": "logistic_regression",
+          "roc_auc": 0.999,
+          "setting": {
+            "C": 10.0
+          },
+          "single_message_latency": {
+            "median_ms": 1.47,
+            "p95_ms": 4.65,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 3.3,
+          "classifier_predict_seconds": 0.03,
+          "converged": true,
+          "features": "word_1_2",
+          "metrics": {
+            "accuracy": 0.985,
+            "f1_spam": 0.9842,
+            "ham_flagged_as_spam": 203,
+            "precision_spam": 0.9778,
+            "recall_spam": 0.9907,
+            "spam_missed": 84,
+            "true_ham": 9853,
+            "true_spam": 8942
+          },
+          "model": "linear_svm",
+          "roc_auc": 0.9982,
+          "setting": {
+            "C": 0.1
+          },
+          "single_message_latency": {
+            "median_ms": 1.47,
+            "p95_ms": 4.11,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 5.3,
+          "classifier_predict_seconds": 0.05,
+          "converged": true,
+          "features": "word_1_2",
+          "metrics": {
+            "accuracy": 0.9915,
+            "f1_spam": 0.991,
+            "ham_flagged_as_spam": 111,
+            "precision_spam": 0.9878,
+            "recall_spam": 0.9942,
+            "spam_missed": 52,
+            "true_ham": 9945,
+            "true_spam": 8974
+          },
+          "model": "linear_svm",
+          "roc_auc": 0.999,
+          "setting": {
+            "C": 1.0
+          },
+          "single_message_latency": {
+            "median_ms": 1.45,
+            "p95_ms": 4.01,
+            "rows": 200
+          }
+        },
+        {
+          "classifier_fit_seconds": 27.5,
+          "classifier_predict_seconds": 0.03,
+          "converged": true,
+          "features": "word_1_2",
+          "metrics": {
+            "accuracy": 0.992,
+            "f1_spam": 0.9915,
+            "ham_flagged_as_spam": 103,
+            "precision_spam": 0.9887,
+            "recall_spam": 0.9945,
+            "spam_missed": 50,
+            "true_ham": 9953,
+            "true_spam": 8976
+          },
+          "model": "linear_svm",
+          "roc_auc": 0.999,
+          "setting": {
+            "C": 10.0
+          },
+          "single_message_latency": {
+            "median_ms": 1.48,
+            "p95_ms": 4.42,
+            "rows": 200
+          }
+        }
+      ],
+      "rows_used": {
+        "train": 152653,
+        "validation": 19082
+      },
+      "vectorizer_fit_seconds": 138.8,
+      "vocabulary_size": 300000
+    }
+  },
+  "selected": {
+    "features": "word_1",
+    "metrics": {
+      "accuracy": 0.9905,
+      "f1_spam": 0.99,
+      "ham_flagged_as_spam": 93,
+      "precision_spam": 0.9897,
+      "recall_spam": 0.9903,
+      "spam_missed": 88,
+      "true_ham": 9963,
+      "true_spam": 8938
+    },
+    "model": "linear_svm",
+    "roc_auc": 0.9987,
+    "setting": {
+      "C": 10.0
+    }
+  },
+  "selection_rule": {
+    "f1_tie_margin": 0.002,
+    "steps": [
+      "Find the highest F1 for Spam, among runs that converged",
+      "Treat every run within the margin as tied",
+      "Among ties, choose the fewest legitimate messages flagged as spam",
+      "If still tied, choose the simplest model, and then the smaller feature set"
+    ]
+  },
+  "split_used_for_selection": "validation"
+}
