@@ -11,7 +11,7 @@ An explainable email spam classifier, planned as an end-to-end machine learning 
 | Done | Python environment, dataset inspection, preprocessing, leakage-safe splits, feature experiments, model comparison, source-leakage experiment, final pipeline and evaluation, FastAPI backend, React and TypeScript website, tests |
 | Planned | Final verification and documentation |
 
-![The classifier page, showing a made-up spam-like message with its label, decision score and influential words](docs/screenshots/classifier-1280.png)
+![The landing page, with headline results, the classifier and charts](docs/screenshots/home-1280.png)
 
 **Test result:** a Linear SVM reached F1 0.9894 for Spam on this dataset's held-out test split, or 0.9727 on messages with no close match in training. **These scores don't show real-world performance.** When trained on one number style and scored on another, as a stand-in for an unfamiliar source, F1 fell to 0.8400 and 21.3% of legitimate messages were flagged. See the [model card](docs/model-card.md).
 
@@ -50,7 +50,7 @@ Then open **http://localhost:5173** in your browser, and leave both terminals ru
 
 | Page | Address | What it shows |
 |---|---|---|
-| Classify | http://localhost:5173/ | Paste email text to get a label, a decision score and the words that influenced it |
+| Classify | http://localhost:5173/ | The landing page: headline results, charts, and the classifier, which gives a label, a decision score and the words that influenced it |
 | Models | http://localhost:5173/models | Saved model comparison, test results and the source-leakage experiment |
 | Dataset | http://localhost:5173/dataset | Verified dataset statistics |
 

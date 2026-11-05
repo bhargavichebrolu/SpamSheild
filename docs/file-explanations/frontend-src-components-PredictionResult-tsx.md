@@ -20,7 +20,7 @@ Input: the API's response, and whether the text has changed since. Output: the r
 
 ## 5. Key implementation decisions
 
-**The score is labelled a decision score,** with a plain statement that it isn't a probability, and no percentage appears. **The caution below 5 recognised words is a display warning, not a measured reliability boundary,** as it says on screen. It only adds text: the label and score come from the API unchanged. A result is marked out of date if the text changes.
+**The score is labelled a decision score,** with a plain statement that it isn't a probability, and no percentage appears. **The caution below 5 recognised words is a display warning, not a measured reliability boundary,** as it says on screen. It only adds text: the label and score come from the API unchanged. A result is marked out of date if the text changes. `DecisionGauge` shows where the score falls on the model's own scale, and isn't a percentage.
 
 ## 6. Dependencies
 
@@ -40,4 +40,4 @@ Showing the score as a percentage or confidence bar was rejected: a Linear SVM p
 
 From the `frontend` folder, run `npm test` for unit tests, and `npm run test:e2e` for browser tests with the real backend and model.
 
-Result on 2026-11-05: 90 unit tests passed, 50 browser tests passed with the real model, and 4 passed with the backend stopped.
+Result on 2026-11-05: 119 unit tests passed, 61 browser tests passed with the real model, and 4 passed with no API listening.

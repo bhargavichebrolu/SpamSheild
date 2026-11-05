@@ -20,7 +20,7 @@ The `--ham` and `--spam` roles colour marks. Ink roles colour text. `.data-table
 
 ## 5. Key implementation decisions
 
-**Text uses ink colours, never Ham or Spam colours,** so it stays readable. The Ham and Spam pair passed a colour-vision validator in both modes. Numbers use aligned figures only in tables. Row names wrap, so they don't push numbers off a narrow screen. No fonts are downloaded.
+**Text uses ink colours, or white on the gradient, never chart colours,** so it stays readable. White was checked against each gradient stop, with contrast of at least 4.84:1 including tinted tiles. The chart colour pairs passed a colour-vision validator in both modes. Scroll padding stops the sticky navigation bar covering focused items. Hover movement switches off for people who ask for reduced motion. Numbers use aligned figures only in tables. Row names wrap, so they don't push numbers off a narrow screen. No fonts are downloaded.
 
 ## 6. Dependencies
 
@@ -40,4 +40,4 @@ White text on coloured bars was rejected, because it failed contrast checks. A s
 
 From the `frontend` folder, run `npm test` for unit tests, and `npm run test:e2e` for browser tests with the real backend and model.
 
-Result on 2026-11-05: 90 unit tests passed, 50 browser tests passed with the real model, and 4 passed with the backend stopped.
+Result on 2026-11-05: 119 unit tests passed, 61 browser tests passed with the real model, and 4 passed with no API listening.

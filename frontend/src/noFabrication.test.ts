@@ -29,7 +29,16 @@ const files = appFiles().map((path) => ({
 describe("no fabricated results in application code", () => {
   it("finds the application's files", () => {
     expect(files.map(({ path }) => path.replaceAll("\\", "/"))).toEqual(
-      expect.arrayContaining(["App.tsx", "services/api.ts", "pages/ClassifierPage.tsx", "pages/ModelsPage.tsx", "pages/DatasetPage.tsx"]),
+      expect.arrayContaining([
+        "App.tsx",
+        "services/api.ts",
+        "pages/HomePage.tsx",
+        "pages/ClassifierPage.tsx",
+        "pages/ModelsPage.tsx",
+        "pages/DatasetPage.tsx",
+        "components/Charts.tsx",
+        "utils/results.ts",
+      ]),
     );
   });
 

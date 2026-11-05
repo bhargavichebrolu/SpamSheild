@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
-/* Colours are defined once here, by role, and swap together in dark mode. Text always uses
-   an ink colour. Only marks use the Ham and Spam colours, so text stays readable. */
+/* Colours are defined once here, by role, and swap together in dark mode. Chart colours were
+   checked with a colour-vision validator, and white text was checked against each gradient
+   stop. Text uses ink colours, or white on the gradient, so that it stays readable. */
 @theme inline {
   --color-page: var(--page);
   --color-surface: var(--surface);
@@ -11,6 +12,11 @@
   --color-axis: var(--axis);
   --color-ham: var(--ham);
   --color-spam: var(--spam);
+  --color-flagged: var(--flagged);
+  --color-missed: var(--missed);
+  --color-split-train: var(--split-train);
+  --color-split-validation: var(--split-validation);
+  --color-split-test: var(--split-test);
   --color-critical: var(--critical);
   --color-warning: var(--warning);
   --color-link: var(--link);
@@ -20,36 +26,64 @@
 
 :root {
   color-scheme: light;
-  --page: #f9f9f7;
-  --surface: #fcfcfb;
-  --ink: #0b0b0b;
-  --ink-secondary: #52514e;
-  --line: #e1e0d9;
-  --axis: #c3c2b7;
+  --page: #f6f5ff;
+  --surface: #ffffff;
+  --ink: #17132e;
+  --ink-secondary: #4f4b66;
+  --line: #e4e1f5;
+  --axis: #c7c2e6;
   --ham: #2a78d6;
   --spam: #e34948;
+  --flagged: #eb6834;
+  --missed: #6250d6;
+  --split-train: #6250d6;
+  --split-validation: #1baf7a;
+  --split-test: #eda100;
   --critical: #d03b3b;
   --warning: #fab219;
-  --link: #1c5cab;
-  --highlight: #cde2fb;
+  --link: #4338ca;
+  --highlight: #e9e3ff;
+  --accent-violet: #7c3aed;
+  --accent-pink: #db2777;
+  --accent-teal: #0d9488;
+  --accent-amber: #d97706;
+  --accent-blue: #2563eb;
+  --brand-gradient: linear-gradient(100deg, #3730a3 0%, #6d28d9 50%, #be185d 100%);
+  --gauge-gradient: linear-gradient(90deg, #2a78d6 0%, #d6d3e8 50%, #e34948 100%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --page: #0d0d0d;
-    --surface: #1a1a19;
-    --ink: #f0efec;
-    --ink-secondary: #c3c2b7;
-    --line: #2c2c2a;
-    --axis: #383835;
+    --page: #0f0d1a;
+    --surface: #1b1830;
+    --ink: #f3f1ff;
+    --ink-secondary: #c9c5e3;
+    --line: #2e2a4a;
+    --axis: #423d66;
     --ham: #3987e5;
     --spam: #e66767;
+    --flagged: #d95926;
+    --missed: #9085e9;
+    --split-train: #9085e9;
+    --split-validation: #199e70;
+    --split-test: #c98500;
     --critical: #d03b3b;
     --warning: #fab219;
-    --link: #86b6ef;
-    --highlight: #184f95;
+    --link: #a5b4fc;
+    --highlight: #3b2f7a;
+    --accent-violet: #a78bfa;
+    --accent-pink: #f472b6;
+    --accent-teal: #2dd4bf;
+    --accent-amber: #fbbf24;
+    --accent-blue: #60a5fa;
+    --gauge-gradient: linear-gradient(90deg, #3987e5 0%, #423d66 50%, #e66767 100%);
   }
+}
+
+/* Keeps a focused or linked-to element from sitting underneath the sticky navigation bar. */
+html {
+  scroll-padding-top: 6rem;
 }
 
 body {
@@ -64,6 +98,121 @@ body {
 }
 
 @layer components {
+  .brand-gradient {
+    background-image: var(--brand-gradient);
+    color: #ffffff;
+  }
+
+  /* Links and focus rings on the gradient are white, because the usual colours would vanish. */
+  .brand-gradient :focus-visible {
+    outline-color: #ffffff;
+  }
+
+  .nav-link {
+    display: block;
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background-color 150ms;
+  }
+
+  .nav-link:hover {
+    background-color: rgb(255 255 255 / 0.18);
+  }
+
+  .nav-link[aria-current="page"] {
+    background-color: #ffffff;
+    color: #4c1d95;
+  }
+
+  .btn-primary {
+    border-radius: 9999px;
+    background-image: var(--brand-gradient);
+    padding: 0.625rem 1.5rem;
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgb(109 40 217 / 0.35);
+    transition: transform 150ms, box-shadow 150ms;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgb(109 40 217 / 0.45);
+  }
+
+  .btn-primary:disabled {
+    background-image: none;
+    background-color: var(--line);
+    color: var(--ink-secondary);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    border: 1px solid var(--axis);
+    border-radius: 9999px;
+    background-color: var(--surface);
+    padding: 0.625rem 1.25rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background-color: var(--highlight);
+  }
+
+  .btn-secondary:disabled {
+    color: var(--ink-secondary);
+    cursor: not-allowed;
+  }
+
+  .card {
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--accent, var(--accent-violet));
+    border-radius: 1rem;
+    background-color: var(--surface);
+    box-shadow: 0 8px 24px rgb(55 48 163 / 0.07);
+  }
+
+  .accent-violet {
+    --accent: var(--accent-violet);
+  }
+
+  .accent-pink {
+    --accent: var(--accent-pink);
+  }
+
+  .accent-teal {
+    --accent: var(--accent-teal);
+  }
+
+  .accent-amber {
+    --accent: var(--accent-amber);
+  }
+
+  .accent-blue {
+    --accent: var(--accent-blue);
+  }
+
+  .stat-tile {
+    border-left: 4px solid var(--accent, var(--accent-violet));
+    border-radius: 0.75rem;
+    background-color: var(--highlight);
+    padding: 0.75rem 1rem;
+  }
+
+  .hero-tile {
+    border-radius: 0.875rem;
+    background-color: rgb(255 255 255 / 0.15);
+    padding: 0.875rem 1rem;
+  }
+
+  .gauge-track {
+    background-image: var(--gauge-gradient);
+  }
+
   .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -113,5 +262,16 @@ body {
 
   .data-table tr[data-highlight="true"] > :first-child {
     padding-left: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary,
+  .nav-link {
+    transition: none;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: none;
   }
 }

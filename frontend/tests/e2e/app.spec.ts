@@ -109,7 +109,7 @@ test.describe("Email classifier, with the real model", () => {
 
   test("shows no percentage or confidence value, and labels the decision score", async ({ page }) => {
     await classify(page, SPAM_EMAIL);
-    const result = page.getByRole("region", { name: "Result" });
+    const result = page.getByRole("region", { name: "Result", exact: true });
     await expect(page.getByTestId("decision-score").locator("..")).toContainText("Decision score");
     await expect(result.getByText(/It isn't a probability/)).toBeVisible();
     const text = await result.innerText();
@@ -136,6 +136,86 @@ test.describe("Email classifier, with the real model", () => {
     await expect(page.getByTestId("prediction-label")).toBeVisible();
     await expect(page.getByTestId("terms-recognised")).toHaveText(String(expected.terms_recognised));
     await expect(page.getByText(/a display warning/)).toHaveCount(0);
+  });
+});
+
+test.describe("Landing page and charts, with real results", () => {
+  test("the headline numbers match the report files", async ({ page }) => {
+    const test_ = report("final_test_evaluation.json");
+    const leakage = report("source_leakage.json");
+    const inspection = report("dataset_inspection.json");
+    await page.goto("/");
+
+    const value = (label: string) => page.getByText(label, { exact: true }).locator("..").locator("dd");
+    await expect(value("F1 on held-out test data")).toHaveText(test_.overall_metrics.f1_spam.toFixed(4));
+    await expect(value("F1 with no close training match")).toHaveText(
+      test_.metrics_by_similarity_band["0.00_to_0.80"].metrics.f1_spam.toFixed(4),
+    );
+    await expect(value("Lowest F1 across text styles")).toHaveText(
+      leakage.cross_style.train_digits_only.validation_by_style.placeholder_only.metrics.f1_spam.toFixed(4),
+    );
+    await expect(value("Emails in the dataset")).toHaveText(count(inspection.structure.rows));
+    await expect(page.getByText(/Measured on this one dataset only/)).toBeVisible();
+  });
+
+  test("the error chart matches the test report", async ({ page }) => {
+    const bands = Object.values(report("final_test_evaluation.json").metrics_by_similarity_band) as {
+      metrics: { ham_flagged_as_spam: number; spam_missed: number };
+    }[];
+    await page.goto("/");
+    const chart = page.getByRole("list", { name: "Test errors by similarity to training data" });
+    for (const [position, band] of bands.entries()) {
+      await expect(chart.getByRole("listitem").nth(position)).toContainText(
+        `${count(band.metrics.ham_flagged_as_spam)} ham flagged, ${count(band.metrics.spam_missed)} spam missed`,
+      );
+    }
+    const first = bands[0]!.metrics.ham_flagged_as_spam + bands[0]!.metrics.spam_missed;
+    const total = bands.reduce((sum, { metrics }) => sum + metrics.ham_flagged_as_spam + metrics.spam_missed, 0);
+    await expect(page.getByText(`${count(first)} of ${count(total)} test errors`)).toBeVisible();
+  });
+
+  test("the decision gauge shows the real score, on the correct side", async ({ page, request }) => {
+    for (const email of [SPAM_EMAIL, HAM_EMAIL]) {
+      const expected = await apiClassify(request, email);
+      await classify(page, email);
+      await expect(page.getByRole("img", { name: new RegExp(`Decision score \\${signed(expected.score)}`) })).toBeVisible();
+      const left = parseFloat(await page.getByTestId("gauge-marker").evaluate((element) => (element as HTMLElement).style.left));
+      expect(left > 50).toBe(expected.score > 0);
+    }
+  });
+
+  test("the Models page's error chart matches the comparison report", async ({ page }) => {
+    const comparison = report("model_comparison.json");
+    await page.goto("/models");
+    const chart = page.getByRole("list", { name: "Validation errors for each model and feature set" });
+    await expect(chart.getByRole("listitem")).toHaveCount(6);
+    const metrics = comparison.selected.metrics;
+    await expect(chart.getByRole("listitem").filter({ hasText: "(selected)" })).toContainText(
+      `${count(metrics.ham_flagged_as_spam)} ham flagged, ${count(metrics.spam_missed)} spam missed`,
+    );
+  });
+
+  test("the Dataset page's charts match the reports", async ({ page }) => {
+    const preparation = report("data_preparation.json");
+    const inspection = report("dataset_inspection.json");
+    await page.goto("/dataset");
+    await expect(page.getByRole("img", { name: /Rows in each split/ })).toHaveAccessibleName(
+      new RegExp(`Train, ${count(preparation.split.rows.train.total)} rows`),
+    );
+    const words = page.getByRole("list", { name: "Share of rows containing each word, for each label" });
+    await expect(words.getByRole("listitem").filter({ hasText: "enron" })).toContainText(
+      `Ham ${(inspection.marker_document_frequency.enron.Ham * 100).toFixed(1)}%`,
+    );
+  });
+
+  test("the landing page still works when its results can't load", async ({ page }) => {
+    await page.route(`${API}/api/results/**`, (route) => route.abort());
+    await page.goto("/");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByText("F1 on held-out test data")).toHaveCount(0);
+    await page.getByLabel("Email text").fill(SPAM_EMAIL);
+    await page.getByRole("button", { name: "Classify", exact: true }).click();
+    await expect(page.getByTestId("prediction-label")).toBeVisible();
   });
 });
 
@@ -212,7 +292,7 @@ test.describe("Validation and errors, from the real backend", () => {
     expect(page.url()).not.toContain(marker);
     const stored = await page.evaluate(() => JSON.stringify({ ...localStorage, ...sessionStorage }));
     expect(stored).not.toContain(marker);
-    await expect(page.getByRole("region", { name: "Result" })).not.toContainText(marker);
+    await expect(page.getByRole("region", { name: "Result", exact: true })).not.toContainText(marker);
   });
 });
 
@@ -326,6 +406,13 @@ test.describe("Responsive layout", () => {
         expect(overflow).toBeLessThanOrEqual(0);
       }
 
+      test("the landing page fits", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.getByRole("heading", { name: "What the results show" })).toBeVisible();
+        await expectNoPageScroll(page);
+        await page.screenshot({ path: join(SCREENSHOTS, `home-${width}.png`), fullPage: true });
+      });
+
       test("the classifier and its result fit", async ({ page }) => {
         await classify(page, SPAM_EMAIL);
         await expect(page.getByTestId("prediction-label")).toBeVisible();
@@ -334,6 +421,7 @@ test.describe("Responsive layout", () => {
           await expect(page.getByRole("link", { name, exact: true })).toBeVisible();
         }
         await expect(page.getByLabel("Email text")).toBeVisible();
+        await page.evaluate(() => window.scrollTo(0, 0));
         await page.screenshot({ path: join(SCREENSHOTS, `classifier-${width}.png`), fullPage: true });
       });
 
@@ -352,9 +440,11 @@ test.describe("Responsive layout", () => {
       });
 
       test("no text is cut off, and wide tables say they scroll", async ({ page }) => {
-        for (const path of ["/models", "/dataset"]) {
+        for (const path of ["/", "/models", "/dataset"]) {
           await page.goto(path);
           await expect(page.locator("main section").first()).toBeVisible();
+          await expect(page.getByText("Loading saved results…")).toHaveCount(0);
+          await page.waitForLoadState("networkidle");
 
           // Text outside a table must fit within the page's width, not just avoid scrolling it.
           const clipped = await page.evaluate(() =>
@@ -402,10 +492,20 @@ test.describe("Accessibility", () => {
     test.describe(`in ${colorScheme} mode`, () => {
       test.use({ colorScheme });
 
+      test("the landing page has no automatically detectable problems", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.getByRole("heading", { name: "What the results show" })).toBeVisible();
+        expect((await axe(page).analyze()).violations).toEqual([]);
+        if (colorScheme === "dark") {
+          await page.screenshot({ path: join(SCREENSHOTS, "home-dark.png"), fullPage: true });
+        }
+      });
+
       test("the classifier with a result has no automatically detectable problems", async ({ page }) => {
         await classify(page, "free prize");
         await expect(page.getByTestId("prediction-label")).toBeVisible();
         expect((await axe(page).analyze()).violations).toEqual([]);
+        await page.evaluate(() => window.scrollTo(0, 0));
         await page.screenshot({ path: join(SCREENSHOTS, `classifier-short-message-${colorScheme}.png`), fullPage: true });
       });
 

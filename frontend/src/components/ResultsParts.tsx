@@ -5,20 +5,31 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Metrics } from "../types/api";
 import { count, share } from "../utils/format";
 
-export function PageSection({ title, children }: { title: string; children: ReactNode }) {
+export type Accent = "violet" | "pink" | "teal" | "amber" | "blue";
+
+export function PageBanner({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="space-y-3 rounded border border-line bg-surface p-4 sm:p-6">
-      <h2 className="text-lg font-semibold">{title}</h2>
+    <header className="brand-gradient rounded-3xl p-6 shadow-xl sm:p-8">
+      <h1 className="text-3xl font-extrabold sm:text-4xl">{title}</h1>
+      <p className="mt-2 max-w-3xl sm:text-lg">{children}</p>
+    </header>
+  );
+}
+
+export function PageSection({ title, accent = "violet", children }: { title: string; accent?: Accent; children: ReactNode }) {
+  return (
+    <section className={`card accent-${accent} space-y-3 p-4 sm:p-6`}>
+      <h2 className="text-xl font-bold">{title}</h2>
       {children}
     </section>
   );
 }
 
-export function StatTile({ label, value }: { label: string; value: string }) {
+export function StatTile({ label, value, accent = "violet" }: { label: string; value: string; accent?: Accent }) {
   return (
-    <div className="rounded border border-line p-3">
+    <div className={`stat-tile accent-${accent}`}>
       <dt className="text-sm text-ink-secondary">{label}</dt>
-      <dd className="mt-1 text-xl font-semibold break-words">{value}</dd>
+      <dd className="mt-1 text-2xl font-bold break-words">{value}</dd>
     </div>
   );
 }
@@ -114,10 +125,10 @@ export function LabelBalanceBar({ ham, spam }: LabelBalanceBarProps) {
       <div
         role="img"
         aria-label={`Ham ${share(ham.share)}, Spam ${share(spam.share)}`}
-        className="flex h-3 w-full gap-0.5"
+        className="flex h-5 w-full gap-0.5"
       >
-        <div className="h-full rounded-l-full bg-ham" style={{ width: `${ham.share * 100}%` }} />
-        <div className="h-full rounded-r-full bg-spam" style={{ width: `${spam.share * 100}%` }} />
+        <div className="h-full rounded-l-lg bg-ham" style={{ width: `${ham.share * 100}%` }} />
+        <div className="h-full rounded-r-lg bg-spam" style={{ width: `${spam.share * 100}%` }} />
       </div>
       <ul className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm">
         <li className="flex items-center gap-2">

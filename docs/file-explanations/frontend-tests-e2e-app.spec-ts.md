@@ -16,7 +16,7 @@ Input: made-up messages, API responses and report files. Output: pass or fail, a
 
 ## 4. Important functions and variables
 
-Tests cover classification, explanations, the decision score, the caution, errors, privacy, saved results, responsive layout at 360, 768 and 1280 pixels, accessibility in both colour modes, and keyboard use.
+Tests cover the landing page's numbers and charts, classification, explanations, the decision score, the caution, errors, privacy, saved results, responsive layout at 360, 768 and 1280 pixels, accessibility in both colour modes, and keyboard use.
 
 ## 5. Key implementation decisions
 
@@ -40,4 +40,4 @@ A stubbed API was rejected: it couldn't catch a real mismatch, or the upload bug
 
 From the `frontend` folder, run `npm test` for unit tests, and `npm run test:e2e` for browser tests with the real backend and model.
 
-Result on 2026-11-05: 90 unit tests passed, 50 browser tests passed with the real model, and 4 passed with the backend stopped.
+Result on 2026-11-05: 119 unit tests passed, 61 browser tests passed with the real model, and 4 passed with no API listening.

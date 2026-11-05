@@ -1,22 +1,35 @@
 import type { ReactNode } from "react";
 
-import { LabelBalanceBar, PageSection, StatGrid, StatTile, TableScroll } from "../components/ResultsParts";
+import { GroupedBars, ShareBar, StackedBars } from "../components/Charts";
+import { LabelBalanceBar, PageBanner, PageSection, StatGrid, StatTile, TableScroll } from "../components/ResultsParts";
 import { ApiErrorMessage, LoadingMessage, StatusMessage } from "../components/StatusMessage";
 import { useApiResource } from "../hooks/useApiResource";
 import { getDatasetResults } from "../services/api";
 import type { DatasetResults } from "../types/api";
 import { count, fileSize, flagName, share, styleName } from "../utils/format";
+import { numberStyleRows, wordShareRows } from "../utils/results";
+
+const LABEL_SERIES = [
+  { key: "ham", name: "Ham", color: "bg-ham" },
+  { key: "spam", name: "Spam", color: "bg-spam" },
+];
+
+const SPLIT_COLORS: Record<string, string> = {
+  train: "bg-split-train",
+  validation: "bg-split-validation",
+  test: "bg-split-test",
+};
 
 function Overview({ data }: { data: DatasetResults }) {
   const missing = Object.values(data.missing_values).reduce((total, value) => total + value, 0);
   const empty = Object.values(data.blank_text.empty_rows).reduce((total, value) => total + value, 0);
   return (
-    <PageSection title="Overview">
+    <PageSection title="Overview" accent="violet">
       <StatGrid>
-        <StatTile label="Rows" value={count(data.structure.rows)} />
-        <StatTile label="Columns" value={data.structure.columns.join(", ")} />
-        <StatTile label="Missing values" value={count(missing)} />
-        <StatTile label="Empty text rows" value={count(empty)} />
+        <StatTile label="Rows" value={count(data.structure.rows)} accent="violet" />
+        <StatTile label="Columns" value={data.structure.columns.join(", ")} accent="pink" />
+        <StatTile label="Missing values" value={count(missing)} accent="amber" />
+        <StatTile label="Empty text rows" value={count(empty)} accent="teal" />
       </StatGrid>
       <h3 className="pt-2 font-semibold">Label balance</h3>
       <LabelBalanceBar ham={data.labels.Ham} spam={data.labels.Spam} />
@@ -39,7 +52,7 @@ function SourceRow({ term, children }: { term: string; children: ReactNode }) {
 function Source({ data }: { data: DatasetResults }) {
   const { source, file } = data;
   return (
-    <PageSection title="Source">
+    <PageSection title="Source" accent="blue">
       <dl>
         <SourceRow term="Reported source">
           <a className="break-all text-link underline" href={source.reported_source_url} rel="noreferrer" target="_blank">
@@ -68,7 +81,7 @@ function Source({ data }: { data: DatasetResults }) {
 function Duplicates({ data }: { data: DatasetResults }) {
   const { duplicates } = data;
   return (
-    <PageSection title="Duplicates and conflicting labels">
+    <PageSection title="Duplicates and conflicting labels" accent="pink">
       <TableScroll label="Duplicate checks">
         <table className="data-table">
           <thead>
@@ -113,7 +126,22 @@ function Lengths({ data }: { data: DatasetResults }) {
     ["Spam", lengths.by_label.Spam],
   ] as const;
   return (
-    <PageSection title="Message length">
+    <PageSection title="Message length" accent="amber">
+      <GroupedBars
+        label="Median message length in characters, for each label"
+        series={LABEL_SERIES}
+        rows={[
+          {
+            label: "Median length, in characters",
+            values: { ham: lengths.by_label.Ham.median, spam: lengths.by_label.Spam.median },
+          },
+          {
+            label: "95th percentile length, in characters",
+            values: { ham: lengths.by_label.Ham.p95, spam: lengths.by_label.Spam.p95 },
+          },
+        ]}
+        formatValue={count}
+      />
       <TableScroll label="Message length in characters" description="In characters, excluding empty rows">
         <table className="data-table">
           <thead>
@@ -169,11 +197,20 @@ function Lengths({ data }: { data: DatasetResults }) {
 function TextFormat({ data }: { data: DatasetResults }) {
   const { text_format: textFormat, word_shares: wordShares } = data;
   return (
-    <PageSection title="Text format">
+    <PageSection title="Text format" accent="teal">
       <p className="text-sm text-ink-secondary">
         The text was processed before this project received it. No row mixes digits with the number placeholder, which
         is evidence of separately processed sources, although the sources themselves aren't verified.
       </p>
+      <h3 className="pt-2 font-semibold">Rows by number style and label</h3>
+      <StackedBars label="Rows by number style and label" series={LABEL_SERIES} rows={numberStyleRows(data)} />
+      <h3 className="pt-2 font-semibold">How often possible source words appear</h3>
+      <GroupedBars
+        label="Share of rows containing each word, for each label"
+        series={LABEL_SERIES}
+        rows={wordShareRows(data)}
+        formatValue={(value) => share(value)}
+      />
       <TableScroll label="How rows write numbers" description="How rows write numbers">
         <table className="data-table">
           <thead>
@@ -258,7 +295,17 @@ function Preparation({ data }: { data: DatasetResults }) {
     ["Repeat of a text (first copy kept)", cleaning.removed_duplicates, "Copies across splits would turn testing into recognition"],
   ];
   return (
-    <PageSection title="Cleaning and splits">
+    <PageSection title="Cleaning and splits" accent="violet">
+      <h3 className="font-semibold">How the rows were split</h3>
+      <ShareBar
+        label="Rows in each split"
+        parts={preparation.splits.map(({ split, total }) => ({
+          name: split.charAt(0).toUpperCase() + split.slice(1),
+          value: total,
+          color: SPLIT_COLORS[split] ?? "bg-axis",
+        }))}
+        formatPart={({ value }, whole) => `${count(value)} rows (${share(value / whole)})`}
+      />
       <TableScroll
         label="Cleaning rules"
         description={`${count(cleaning.rows_in)} rows in, ${count(cleaning.rows_kept)} kept. Rows are compared after preprocessing, and the raw file isn't changed.`}
@@ -322,12 +369,9 @@ export function DatasetPage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold">Dataset explorer</h1>
-        <p className="mt-1 text-ink-secondary">
-          Aggregate statistics computed from the project's dataset, served by the API. No email text is shown.
-        </p>
-      </header>
+      <PageBanner title="Dataset explorer">
+        Aggregate statistics computed from the project's dataset, served by the API. No email text is shown.
+      </PageBanner>
 
       {loading && <LoadingMessage>Loading dataset statistics…</LoadingMessage>}
       {error != null && <ApiErrorMessage error={error} onRetry={retry} />}

@@ -242,9 +242,9 @@ None. Milestone 5 continued this work.
 
 ## 2026-11-05: Milestone 5, React web application and explainability
 
-**Status:** Implemented and awaiting review.
+**Status:** Complete.
 
-**Commit:** Not committed yet.
+**Commit:** `908a5fb`
 
 ### Work completed
 
@@ -309,5 +309,53 @@ These were run on an i7-12650H with 15.7 GB RAM, with other applications open, u
 
 ### Remaining work
 
-- Project owner to review and commit.
+None. The visual redesign below continued this work.
+
+## 2026-11-05: Visual redesign of the website
+
+**Status:** Implemented and awaiting review. Requested by the project owner after reviewing Milestone 5.
+
+**Commit:** Not committed yet.
+
+### Work completed
+
+- Replaced the visual style with a gradient navigation bar, shield logo, colourful cards and page banners.
+- Added a landing page with a hero, headline results, a "how it works" strip and charts.
+- Added charts to the Models and Dataset pages, and a decision gauge to the result.
+- Wrote 29 unit tests and 11 browser tests. The backend, frozen model and API weren't changed.
+
+### Important decisions
+
+| Decision | Reason |
+|---|---|
+| Commit the reviewed Milestone 5 first | Keeps the reviewed version in history, separate from an unreviewed redesign |
+| Show the weaker results beside the strongest in the hero | A vibrant page shouldn't overstate performance |
+| Chart error counts, not F1, where values are close | F1 values from 0.97 to 0.99 look the same from zero, and a cut-off axis would exaggerate differences |
+| Make the gauge a position on the model's scale | A speedometer style could read as a percentage |
+| Validate colours before using them | Vibrant palettes often fail contrast. Two low-contrast split colours rely on their text labels, as the validator requires |
+
+### Problems encountered
+
+| Problem | Cause | Resolution |
+|---|---|---|
+| A chart said errors were in "messages unlike anything in training" | My wording overstated the data, which only measures having no close match. I noticed it when reviewing the screenshots. | Corrected the wording |
+| The sticky navigation bar could cover focused items | It stays on screen while the page scrolls | Added scroll padding |
+| Browser tests wouldn't start | The project owner's own servers were using the ports, and the tests refuse to reuse a server | Ran them against those servers, using a temporary config, and ran the API-stopped suite on a separate port. Those servers weren't stopped. |
+
+### Tests and actual results
+
+| Check | Result |
+|---|---|
+| `python -m pytest backend` | 290 passed |
+| Frontend type check and production build | Passed |
+| `npm test` | 119 passed |
+| Browser tests, real API and frozen model | 61 passed, including layouts at 360, 768 and 1280 pixels, and accessibility checks in both colour modes |
+| Browser tests, no API listening | 4 passed, on a separate port pointed at an API port with nothing listening |
+| Frozen model | Same file hash and fingerprint |
+
+**Not tested:** a screen reader, a real phone, or browsers other than Edge.
+
+### Remaining work
+
+- Project owner to review and decide whether to commit.
 - Milestone 6: full verification, final documentation, and portfolio readiness.

@@ -862,3 +862,4 @@ Further Milestone 5 decisions:
 - Keep the frozen model, its metadata and the training pipeline unchanged.
 - Keep dataset and model reports restricted to verified aggregate information, with no mock predictions or fabricated metrics in the application.
 - Verify responsive layouts at 360, 768 and 1280 pixels, and test the complete application with the real model.
+- After review, give the site a colourful navigation bar and landing page, with charts. Charts must still use only real results from the API.

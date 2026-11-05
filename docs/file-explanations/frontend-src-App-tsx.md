@@ -16,11 +16,11 @@ Input: the current URL. Output: the matching page inside the shared layout.
 
 ## 4. Important functions and variables
 
-`PAGES` lists the three pages. `App` sets the page title and routes. `NotFoundPage` handles unknown addresses.
+`PAGES` lists the three pages. `App` sets the page title and routes. `ShieldLogo` draws the logo. `NotFoundPage` handles unknown addresses.
 
 ## 5. Key implementation decisions
 
-The footer states on every page that this is a prototype, not a security product. A skip link helps keyboard users. Navigation wraps on narrow screens rather than hiding behind a menu, because there are only three items.
+The navigation bar is a sticky gradient with pill-shaped links, and the current page's link is white. The footer states on every page that this is a prototype, not a security product. A skip link helps keyboard users. Navigation wraps on narrow screens rather than hiding behind a menu, because there are only three items.
 
 ## 6. Dependencies
 
@@ -40,4 +40,4 @@ A collapsing menu was rejected, because three links fit at 360 pixels, and hidin
 
 From the `frontend` folder, run `npm test` for unit tests, and `npm run test:e2e` for browser tests with the real backend and model.
 
-Result on 2026-11-05: 90 unit tests passed, 50 browser tests passed with the real model, and 4 passed with the backend stopped.
+Result on 2026-11-05: 119 unit tests passed, 61 browser tests passed with the real model, and 4 passed with no API listening.

@@ -20,11 +20,11 @@ Input: `GET /api/results/models`. Output: the page, or an error with no numbers.
 
 ## 5. Key implementation decisions
 
-**Every number comes from the API.** The note that the selected model isn't the highest F1 is worked out from the data, not written in. Sample counts appear for each similarity band. The source-leakage section keeps its warning that it doesn't prove generalisation. A warning appears if the test report doesn't describe the saved model.
+**Every number comes from the API.** Charts sit above the tables, and show errors by similarity, errors by model, and scores across text styles. The note that the selected model isn't the highest F1 is worked out from the data, not written in. Sample counts appear for each similarity band. The source-leakage section keeps its warning that it doesn't prove generalisation. A warning appears if the test report doesn't describe the saved model.
 
 ## 6. Dependencies
 
-`ResultsParts`, `StatusMessage`, `useApiResource`, `services/api.ts`, `utils/format.ts`.
+`Charts`, `ResultsParts`, `StatusMessage`, `useApiResource`, `services/api.ts`, `utils/format.ts`, `utils/results.ts`.
 
 ## 7. How its output is used next
 
@@ -40,4 +40,4 @@ Showing only the best results was rejected, because the lower cross-style scores
 
 From the `frontend` folder, run `npm test` for unit tests, and `npm run test:e2e` for browser tests with the real backend and model.
 
-Result on 2026-11-05: 90 unit tests passed, 50 browser tests passed with the real model, and 4 passed with the backend stopped.
+Result on 2026-11-05: 119 unit tests passed, 61 browser tests passed with the real model, and 4 passed with no API listening.

@@ -20,11 +20,11 @@ Input: `GET /api/results/dataset`. Output: the page, or an error with no numbers
 
 ## 5. Key implementation decisions
 
-**The licence is prominently "Not verified".** Source details use a wrapping list instead of a table, because a table cut them off on phones. The explanation of each cleaning rule is written here, while its count comes from the API.
+**The licence is prominently "Not verified".** Charts show message length, number styles, source-word shares and the split, with the full tables below them. Source details use a wrapping list instead of a table, because a table cut them off on phones. The explanation of each cleaning rule is written here, while its count comes from the API.
 
 ## 6. Dependencies
 
-`react`, `ResultsParts`, `StatusMessage`, `useApiResource`, `services/api.ts`, `utils/format.ts`.
+`react`, `Charts`, `ResultsParts`, `StatusMessage`, `useApiResource`, `services/api.ts`, `utils/format.ts`, `utils/results.ts`.
 
 ## 7. How its output is used next
 
@@ -40,4 +40,4 @@ Showing example messages was rejected: the licence is unverified, and the API's 
 
 From the `frontend` folder, run `npm test` for unit tests, and `npm run test:e2e` for browser tests with the real backend and model.
 
-Result on 2026-11-05: 90 unit tests passed, 50 browser tests passed with the real model, and 4 passed with the backend stopped.
+Result on 2026-11-05: 119 unit tests passed, 61 browser tests passed with the real model, and 4 passed with no API listening.

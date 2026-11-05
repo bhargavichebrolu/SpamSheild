@@ -23,7 +23,7 @@ export function StatusMessage({ tone, title, children }: StatusMessageProps) {
   return (
     <div
       role={tone === "error" ? "alert" : "status"}
-      className={`rounded border border-line border-l-4 ${border} bg-surface p-4 text-sm`}
+      className={`rounded-xl border border-line border-l-4 ${border} bg-surface p-4 text-sm`}
     >
       <p className="flex items-start gap-2 font-semibold">
         {icon && (
@@ -55,7 +55,7 @@ export function RetryButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="rounded border border-axis bg-surface px-3 py-1.5 text-sm font-medium text-ink hover:bg-line"
+      className="btn-secondary !px-4 !py-1.5 text-sm"
     >
       Try again
     </button>

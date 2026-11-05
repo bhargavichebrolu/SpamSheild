@@ -38,7 +38,7 @@ export function ClassifierForm({ text, loading, onTextChange, onSubmit, onClear 
           aria-describedby="email-text-help"
           aria-invalid={overLimit}
           placeholder="Paste the text of an email here"
-          className="block w-full rounded border border-axis bg-surface p-3 text-base text-ink placeholder:text-ink-secondary"
+          className="block w-full rounded-xl border-2 border-axis bg-surface p-3 text-base text-ink placeholder:text-ink-secondary focus:border-link"
         />
         <div id="email-text-help" className="mt-1 flex flex-wrap justify-between gap-x-4 gap-y-1 text-sm text-ink-secondary">
           <span>Your text isn't stored or logged.</span>
@@ -49,19 +49,10 @@ export function ClassifierForm({ text, loading, onTextChange, onSubmit, onClear 
         </div>
       </div>
       <div className="flex flex-wrap gap-2">
-        <button
-          type="submit"
-          disabled={empty || loading}
-          className="rounded bg-ink px-4 py-2 font-semibold text-page hover:opacity-90 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-secondary"
-        >
+        <button type="submit" disabled={empty || loading} className="btn-primary">
           {loading ? "Classifying…" : "Classify"}
         </button>
-        <button
-          type="button"
-          onClick={onClear}
-          disabled={text.length === 0 && !loading}
-          className="rounded border border-axis bg-surface px-4 py-2 font-medium text-ink hover:bg-line disabled:cursor-not-allowed disabled:text-ink-secondary"
-        >
+        <button type="button" onClick={onClear} disabled={text.length === 0 && !loading} className="btn-secondary">
           Clear
         </button>
       </div>

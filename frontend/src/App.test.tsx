@@ -25,7 +25,8 @@ function renderAt(path: string) {
 describe("App", () => {
   it("opens on the classifier", () => {
     renderAt("/");
-    expect(screen.getByRole("heading", { name: "Classify an email", level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Classify an email", level: 2 })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Is that email spam?");
     expect(screen.getByRole("link", { name: "Classify" })).toHaveAttribute("aria-current", "page");
   });
 

@@ -26,8 +26,10 @@ The website has no copy of the model or the results. If the API can't answer, th
 ## Website flow
 
 ```text
-ClassifierPage                 POST /api/classify        Label, decision score, explanation
-ModelsPage    ─► services/api.ts ─► GET /api/results/models ─► Saved comparison and evaluation
+HomePage ─ hero and charts ─►  GET /api/results/models   Headline numbers and charts
+   │                           GET /api/results/dataset
+   └─ ClassifierPage ─►        POST /api/classify        Label, decision score, explanation
+ModelsPage ─► services/api.ts  GET /api/results/models   Saved comparison and evaluation
 DatasetPage                    GET /api/results/dataset  Verified aggregate statistics
                                GET /api/health           Whether the API and model are ready
 ```
@@ -122,8 +124,8 @@ The model is loaded once, so requests don't reload it.
 | Explanations | `backend/app/ml/explain.py` | Term contributions from the model's weights | `numpy`, `scipy` |
 | Model information | `backend/app/ml/model_info.py` | Describes the model from metadata and reports | Saved reports |
 | Saved results | `backend/app/ml/results.py`, `backend/app/schemas/results.py` | Reads reports for the website, limited to named fields | Saved reports, Pydantic |
-| Website pages | `frontend/src/pages/` | Classifier, Models and Dataset pages | React, components, API service |
-| Website components | `frontend/src/components/` | Form, result, explanation, tables and messages | React, Tailwind CSS |
+| Website pages | `frontend/src/pages/` | Landing, Classifier, Models and Dataset pages | React, components, API service |
+| Website components | `frontend/src/components/` | Form, result, explanation, charts, tables and messages | React, Tailwind CSS |
 | API service | `frontend/src/services/api.ts` | The only code that calls the network | The backend's endpoints |
 | Website tests | `frontend/src/**/*.test.*`, `frontend/tests/e2e/` | Unit tests, and browser tests with the real backend and model | Vitest, Testing Library, Playwright, axe |
 | Training code | `backend/training/` | Inspection, cleaning, splitting, experiments, training, evaluation | `app.ml`, `pandas`, `numpy`, `scipy`, `scikit-learn` |

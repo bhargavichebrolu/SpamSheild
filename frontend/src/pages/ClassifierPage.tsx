@@ -77,17 +77,14 @@ export function ClassifierPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold">Classify an email</h1>
-        <p className="mt-1 text-ink-secondary">
-          Paste an email's text to see whether the model classifies it as spam or ham, and which words influenced that.
-        </p>
-      </header>
-
+    <div id="classify" className="scroll-mt-24 space-y-6">
       <BackendStatus />
 
-      <div className="rounded border border-line bg-surface p-4 sm:p-6">
+      <div className="card accent-violet p-4 sm:p-6">
+        <h2 className="text-2xl font-bold">Classify an email</h2>
+        <p className="mt-1 mb-4 text-ink-secondary">
+          Paste an email's text to see whether the model classifies it as spam or ham, and which words influenced that.
+        </p>
         <ClassifierForm
           text={text}
           loading={loading}

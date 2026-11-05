@@ -1,5 +1,6 @@
 import type { ClassifyResponse } from "../types/api";
 import { count, signed } from "../utils/format";
+import { DecisionGauge } from "./Charts";
 import { StatusMessage } from "./StatusMessage";
 import { TermContributions } from "./TermContributions";
 
@@ -19,7 +20,7 @@ export function PredictionResult({ result, outOfDate }: PredictionResultProps) {
   const fewWords = result.terms_recognised < SHORT_MESSAGE_RECOGNISED_WORDS;
 
   return (
-    <section aria-labelledby="result-heading" className="space-y-5 rounded border border-line bg-surface p-4 sm:p-6">
+    <section aria-labelledby="result-heading" className={`card space-y-5 p-4 sm:p-6 ${isSpam ? "accent-pink" : "accent-blue"}`}>
       <h2 id="result-heading" className="sr-only">
         Result
       </h2>
@@ -33,8 +34,8 @@ export function PredictionResult({ result, outOfDate }: PredictionResultProps) {
       <div className={outOfDate ? "space-y-5 opacity-60" : "space-y-5"}>
         <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3">
           <p className="flex items-center gap-3">
-            <span aria-hidden="true" className={`h-3 w-3 rounded-full ${isSpam ? "bg-spam" : "bg-ham"}`} />
-            <span className="text-3xl font-semibold" data-testid="prediction-label">
+            <span aria-hidden="true" className={`h-5 w-5 rounded-full ${isSpam ? "bg-spam" : "bg-ham"}`} />
+            <span className="text-4xl font-extrabold" data-testid="prediction-label">
               {isSpam ? "Spam" : "Ham"}
             </span>
             <span className="text-sm text-ink-secondary">{isSpam ? "unwanted or deceptive" : "legitimate"}</span>
@@ -46,6 +47,8 @@ export function PredictionResult({ result, outOfDate }: PredictionResultProps) {
             </span>
           </p>
         </div>
+
+        <DecisionGauge score={result.score} />
 
         <p className="text-sm text-ink-secondary">
           The decision score shows which side of the model's decision boundary this text falls on, and how far from it,

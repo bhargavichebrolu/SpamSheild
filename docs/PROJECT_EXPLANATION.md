@@ -292,6 +292,16 @@ You paste text, and click Classify
 
 The Models and Dataset pages work the same way, with `GET /api/results/models` and `GET /api/results/dataset`.
 
+### The landing page and charts
+
+The first page combines a hero, the classifier, a "how it works" strip and charts. All numbers come from the API.
+
+- **The hero shows the weaker results beside the strongest:** F1 on test data, F1 with no close training match, and the lowest F1 across text styles, with a note that they only describe this dataset.
+- **Charts start from zero, on one scale:** so differences appear at their true size. Error counts are charted rather than F1, because F1 values from 0.97 to 0.99 would look almost the same from zero.
+- **Every value is also written as text:** so nothing depends on colour or hovering.
+- **The decision gauge is a position on the model's own scale,** not a percentage.
+- **If results can't load,** the numbers and charts disappear with no extra error, and the classifier still works.
+
 ### How it avoids showing anything made up
 
 - **All numbers come from responses:** if the API fails, the page shows an error and no numbers.
@@ -343,10 +353,11 @@ The site was tested at 360, 768 and 1280 pixels wide. Wide tables scroll inside 
 | [`frontend/src/services/api.ts`](../frontend/src/services/api.ts) | All calls to the API | Pages |
 | [`frontend/src/types/api.ts`](../frontend/src/types/api.ts) | API response types | The API service, pages and components |
 | [`frontend/src/App.tsx`](../frontend/src/App.tsx), [`main.tsx`](../frontend/src/main.tsx) | Page layout, routes and startup | The browser |
-| [`frontend/src/pages/`](../frontend/src/pages/) | Classifier, Models and Dataset pages | `App.tsx` |
-| [`frontend/src/components/`](../frontend/src/components/) | Form, result, explanation, tables and messages | Pages |
+| [`frontend/src/pages/`](../frontend/src/pages/) | Landing, Classifier, Models and Dataset pages | `App.tsx` |
+| [`frontend/src/components/`](../frontend/src/components/) | Form, result, explanation, charts, tables and messages | Pages |
 | [`frontend/src/hooks/useApiResource.ts`](../frontend/src/hooks/useApiResource.ts) | Loading, errors and retries | Pages |
 | [`frontend/src/utils/format.ts`](../frontend/src/utils/format.ts) | Display formatting | Pages and components |
+| [`frontend/src/utils/results.ts`](../frontend/src/utils/results.ts) | Selects values from API results for charts | Pages |
 | [`frontend/tests/e2e/`](../frontend/tests/e2e/) | Browser tests with the real backend and model | Playwright |
 | [`backend/app/config.py`](../backend/app/config.py) | API limits and allowed origins | `main.py`, `predict.py`, `model_info.py`, schemas |
 | [`backend/training/config.py`](../backend/training/config.py) | Shared paths, seed and split shares | Training scripts |
@@ -388,8 +399,8 @@ The project has three kinds of test:
 | Tests | Count | What they use |
 |---|---:|---|
 | Backend (pytest) | 290 | Mostly small made-up data. A few use the real model, reports or word lists when present, and skip in a fresh copy of the repository |
-| Frontend unit tests (Vitest) | 90 | Made-up responses, with the network replaced |
-| Browser tests (Playwright) | 54 | **The real backend and frozen model, with nothing stubbed.** 50 run with the backend up, and 4 with it really stopped |
+| Frontend unit tests (Vitest) | 119 | Made-up responses, with the network replaced |
+| Browser tests (Playwright) | 65 | **The real backend and frozen model.** 61 run with the backend up, and 4 with no API listening. One slows a request to see the loading state, and one blocks only the results to test that failure |
 
 The backend tests cover:
 

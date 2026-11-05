@@ -1,9 +1,21 @@
-import { ConfusionMatrix, PageSection, StatGrid, StatTile, TableScroll } from "../components/ResultsParts";
+import { RatioBars, StackedBars } from "../components/Charts";
+import { ConfusionMatrix, PageBanner, PageSection, StatGrid, StatTile, TableScroll } from "../components/ResultsParts";
 import { ApiErrorMessage, LoadingMessage, StatusMessage } from "../components/StatusMessage";
 import { useApiResource } from "../hooks/useApiResource";
 import { getModelsResults } from "../services/api";
 import type { CrossStyleRun, ModelsResults } from "../types/api";
 import { bandName, count, featureName, metric, modelName, removalName, settingText, share, styleName } from "../utils/format";
+import { bestRunPerCombination, crossStyleBars, errorsByBand } from "../utils/results";
+
+const ERROR_SERIES = [
+  { key: "flagged", name: "Ham flagged", color: "bg-flagged" },
+  { key: "missed", name: "Spam missed", color: "bg-missed" },
+];
+
+const STYLE_SERIES = [
+  { key: "same", name: "Same text style", color: "bg-split-validation" },
+  { key: "other", name: "Different text style", color: "bg-flagged" },
+];
 
 function crossStyleName(run: CrossStyleRun): string {
   const parts = [styleName(run.training_style)];
@@ -23,12 +35,12 @@ function SelectedModel({ results }: { results: ModelsResults }) {
   const selectedIsBest = best.metrics.f1_spam === selected.metrics.f1_spam;
 
   return (
-    <PageSection title="Selected model">
+    <PageSection title="Selected model" accent="teal">
       <StatGrid>
-        <StatTile label="Model" value={modelName(finalModel.model)} />
-        <StatTile label="Features" value={featureName(finalModel.features)} />
-        <StatTile label="Setting" value={settingText(finalModel.setting)} />
-        <StatTile label="Words excluded" value={count(finalModel.removed_word_count)} />
+        <StatTile label="Model" value={modelName(finalModel.model)} accent="teal" />
+        <StatTile label="Features" value={featureName(finalModel.features)} accent="teal" />
+        <StatTile label="Setting" value={settingText(finalModel.setting)} accent="teal" />
+        <StatTile label="Words excluded" value={count(finalModel.removed_word_count)} accent="teal" />
       </StatGrid>
       <p className="text-sm text-ink-secondary">
         Trained on {count(finalModel.training_rows)} rows, with a vocabulary of {count(finalModel.vocabulary_size)} words.
@@ -54,7 +66,7 @@ function TestResults({ results }: { results: ModelsResults }) {
   const test = results.test_evaluation;
   const metrics = test.overall_metrics;
   return (
-    <PageSection title="Final test results">
+    <PageSection title="Final test results" accent="violet">
       <p className="text-sm text-ink-secondary">
         The frozen model was evaluated once, on {count(test.rows)} held-out messages. These scores only describe this
         dataset's sources.
@@ -65,10 +77,10 @@ function TestResults({ results }: { results: ModelsResults }) {
         </StatusMessage>
       )}
       <StatGrid>
-        <StatTile label="F1 (Spam)" value={metric(metrics.f1_spam)} />
-        <StatTile label="Precision (Spam)" value={metric(metrics.precision_spam)} />
-        <StatTile label="Recall (Spam)" value={metric(metrics.recall_spam)} />
-        <StatTile label="ROC-AUC" value={metric(test.roc_auc)} />
+        <StatTile label="F1 (Spam)" value={metric(metrics.f1_spam)} accent="violet" />
+        <StatTile label="Precision (Spam)" value={metric(metrics.precision_spam)} accent="pink" />
+        <StatTile label="Recall (Spam)" value={metric(metrics.recall_spam)} accent="amber" />
+        <StatTile label="ROC-AUC" value={metric(test.roc_auc)} accent="teal" />
       </StatGrid>
       <ConfusionMatrix metrics={metrics} caption="Test split: predictions against actual labels" />
       <h3 className="pt-2 font-semibold">By similarity to training data</h3>
@@ -76,6 +88,15 @@ function TestResults({ results }: { results: ModelsResults }) {
         Each message is grouped by its closest training message. The first row is a fairer guide to messages without a
         close match, but they still come from this dataset's sources.
       </p>
+      <StackedBars
+        label="Test errors by similarity to training data"
+        series={ERROR_SERIES}
+        rows={errorsByBand(results).map(({ band, rows, flagged, missed }) => ({
+          label: bandName(band),
+          detail: `(${count(rows)} messages)`,
+          values: { flagged, missed },
+        }))}
+      />
       <TableScroll label="Test results by similarity to training data">
         <table className="data-table">
           <thead>
@@ -115,12 +136,27 @@ function ComparisonTable({ results }: { results: ModelsResults }) {
     settingText(run.setting) === settingText(selected.setting);
 
   return (
-    <PageSection title="Model comparison">
+    <PageSection title="Model comparison" accent="pink">
       <p className="text-sm text-ink-secondary">
         All {count(runs.length)} runs used the same split, and within each feature set every model used the same
         features. These are {selection.split_used} results, from {count(featureSets[0]?.train_rows ?? 0)} training rows
         and {count(featureSets[0]?.validation_rows ?? 0)} {selection.split_used} rows.
       </p>
+      <h3 className="pt-2 font-semibold">Errors for each model and feature set</h3>
+      <p className="text-sm text-ink-secondary">
+        Each row is the selected run, or that combination's highest-F1 run. Shorter is better, with fewest errors first.
+      </p>
+      <StackedBars
+        label="Validation errors for each model and feature set"
+        series={ERROR_SERIES}
+        rows={bestRunPerCombination(results).map(({ label, detail, flagged, missed, selected: isChosen }) => ({
+          label: isChosen ? `${label} (selected)` : label,
+          detail: `(${detail})`,
+          highlight: isChosen,
+          values: { flagged, missed },
+        }))}
+      />
+      <h3 className="pt-2 font-semibold">All runs</h3>
       <TableScroll label="All model comparison runs">
         <table className="data-table">
           <thead>
@@ -165,7 +201,7 @@ function SourceLeakageResults({ results }: { results: ModelsResults }) {
   const leakage = results.source_leakage;
   const decision = leakage.removal_decision;
   return (
-    <PageSection title="Source-leakage experiment">
+    <PageSection title="Source-leakage experiment" accent="amber">
       <StatusMessage tone="caution" title="What this does and doesn't show">
         <p>{leakage.interpretation_note}</p>
       </StatusMessage>
@@ -175,6 +211,13 @@ function SourceLeakageResults({ results }: { results: ModelsResults }) {
         The dataset's digit and placeholder styles are used as a stand-in for separate sources. Lower scores on a
         different style suggest the model may struggle with unfamiliar email.
       </p>
+      <RatioBars
+        label="F1 for Spam, trained on one text style and scored on each"
+        series={STYLE_SERIES}
+        rows={crossStyleBars(results)}
+        scaleMax={1}
+        formatValue={(value) => (value === 0 || value === 1 ? String(value) : metric(value))}
+      />
       <TableScroll label="Cross-style results">
         <table className="data-table">
           <thead>
@@ -246,12 +289,9 @@ export function ModelsPage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold">Model comparison</h1>
-        <p className="mt-1 text-ink-secondary">
-          Every number here comes from the project's saved experiment reports, served by the API.
-        </p>
-      </header>
+      <PageBanner title="Model comparison">
+        Every number here comes from the project's saved experiment reports, served by the API.
+      </PageBanner>
 
       {loading && <LoadingMessage>Loading saved results…</LoadingMessage>}
       {error != null && <ApiErrorMessage error={error} onRetry={retry} />}
@@ -261,7 +301,7 @@ export function ModelsPage() {
           <SelectedModel results={data} />
           <ComparisonTable results={data} />
           <SourceLeakageResults results={data} />
-          <PageSection title="Limitations">
+          <PageSection title="Limitations" accent="blue">
             <ul className="list-disc space-y-1 pl-5 text-sm">
               {data.limitations.map((limitation) => (
                 <li key={limitation}>{limitation}</li>

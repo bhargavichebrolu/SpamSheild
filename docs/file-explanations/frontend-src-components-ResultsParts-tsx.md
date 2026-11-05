@@ -16,7 +16,7 @@ Input: values from the page. Output: display elements.
 
 ## 4. Important functions and variables
 
-`PageSection`, `StatTile`, `StatGrid`, `TableScroll`, `ConfusionMatrix`, `LabelBalanceBar`.
+`PageBanner`, `PageSection`, `StatTile`, `StatGrid`, `TableScroll`, `ConfusionMatrix`, `LabelBalanceBar`.
 
 ## 5. Key implementation decisions
 
@@ -40,4 +40,4 @@ Hiding columns on phones was rejected, because it would hide results. A pie char
 
 From the `frontend` folder, run `npm test` for unit tests, and `npm run test:e2e` for browser tests with the real backend and model.
 
-Result on 2026-11-05: 90 unit tests passed, 50 browser tests passed with the real model, and 4 passed with the backend stopped.
+Result on 2026-11-05: 119 unit tests passed, 61 browser tests passed with the real model, and 4 passed with no API listening.

@@ -28,7 +28,7 @@ Input: the user's text. Output: a real result from the API, or an error.
 
 ## 7. How its output is used next
 
-`App.tsx` routes `/` to it.
+`HomePage` shows it on the landing page.
 
 ## 8. Tests
 
@@ -40,4 +40,4 @@ Saving recent results was deferred: prediction history is optional in the PRD, a
 
 From the `frontend` folder, run `npm test` for unit tests, and `npm run test:e2e` for browser tests with the real backend and model.
 
-Result on 2026-11-05: 90 unit tests passed, 50 browser tests passed with the real model, and 4 passed with the backend stopped.
+Result on 2026-11-05: 119 unit tests passed, 61 browser tests passed with the real model, and 4 passed with no API listening.
