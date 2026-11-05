@@ -118,9 +118,9 @@ None. Milestone 3 continued this work.
 
 ## 2026-11-05: Milestone 3, model training, comparison and evaluation
 
-**Status:** Implemented and awaiting review.
+**Status:** Complete.
 
-**Commit:** Not committed yet.
+**Commit:** `1f4dd8c`
 
 ### Work completed
 
@@ -177,4 +177,66 @@ Experiments were run on an i7-12650H with 15.7 GB RAM, with other applications o
 
 ### Remaining work
 
+None. Milestone 4 continued this work.
+
+## 2026-11-05: Milestone 4, FastAPI backend and prediction pipeline
+
+**Status:** Implemented and awaiting review.
+
+**Commit:** Not committed yet.
+
+### Work completed
+
+- Committed Milestone 3 as `1f4dd8c`, at the project owner's request, after their pre-commit checks passed.
+- Built health, classify and model-info endpoints, with request validation and one error shape.
+- Added verified model loading: file hash before loading, then content fingerprint and structure.
+- Added explanations calculated from the model's own weights.
+- Wrote 98 new tests, and a tool comparing API results with direct inference.
+- Tested a real server over HTTP.
+- Updated the architecture, project explanation, model card, README and source-file logs.
+
+The frozen model wasn't retrained or modified. Its file hash stayed `ed9f16df…212e862`, and its content fingerprint stayed `6f5135d9…a10c2e2`.
+
+### Important decisions
+
+| Decision | Reason |
+|---|---|
+| Reject text over 20,000 characters | The model only reads that many, so accepting more would silently ignore part of the message. Required by the project owner. |
+| `confidence` is always `null` | A Linear SVM doesn't provide a meaningful probability. Required by the project owner. |
+| Term contributions as the explanation | They're the model's own calculation and add up exactly to the score, so no approximation or extra library is needed |
+| Check the file's hash before loading it | Loading a tampered file could run code |
+| Reject text with no recognised words | The score would just be the intercept, so the label would say nothing about the message |
+| Keep the API running without a model | `/api/health` can then explain the problem, rather than the server failing to start |
+| Replace FastAPI's validation errors | The defaults repeat the rejected input, which could be someone's email |
+| Add `model_info.py`, which wasn't in the plan | Keeps reading reports out of the endpoints, and results come from generated reports rather than being written by hand |
+| Use `httpx2` for the test client | Starlette has deprecated `httpx` for this, which settled the warning from Milestone 1's checks |
+| Compare against direct inference on validation data only | The test split has had its one evaluation |
+
+### Problems encountered
+
+| Problem | Cause | Resolution |
+|---|---|---|
+| Oversized uploads got a connection reset instead of a `413` | The middleware replied while the client was still sending. Only real HTTP showed this; the test client can't. | Read and discard the rest of the upload, up to 16 MB, before replying. Added a test using a real server. |
+| One validation row appeared as a failure in the comparison | It was over 256 KB, so it correctly got a `413`, which my tool counted as a failure | Changed the tool to record each status and code, and confirmed this by rerunning it |
+| A test for training imports failed on a docstring | It searched file text, and matched the phrase "imports from training/" | Parsed real import statements instead |
+| A test expected 3 failures, and got 5 | My expectation was wrong: when classification is fully broken, the rejections inside it fail too | Corrected the test |
+
+### Tests and actual results
+
+| Check | Result |
+|---|---|
+| `python -m pytest backend` | 260 passed |
+| Every validation message through the API (19,082) | 18,929 accepted and 153 correctly refused, with 0 label mismatches, 0 score mismatches, 0 explanation mismatches and 0 unexpected failures |
+| Real server start | About 3 seconds, peak memory about 0.24 GB |
+| Real HTTP latency, 300 requests with a new connection each | Median 16 ms, 95th percentile 28 ms |
+| All error types over real HTTP | Correct status, code and message |
+| Marker word in submitted text | Not in any response or server log |
+| CORS | Local website address allowed, another origin not |
+| Frozen model | Same file hash and fingerprint throughout |
+
+Latency was measured on an i7-12650H with other applications open. The results of [`verify_api.py`](../backend/reports/api_verification.json) are saved as a report.
+
+### Remaining work
+
 - Project owner to review and commit.
+- Milestone 5: a working React and TypeScript website connected to this API.

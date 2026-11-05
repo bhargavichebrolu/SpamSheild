@@ -4,12 +4,12 @@ An explainable email spam classifier, planned as an end-to-end machine learning 
 
 ## Project status
 
-**Milestone 3 of 6 is implemented and awaiting review.** A final model has been trained, saved and evaluated. There is no API or web interface yet.
+**Milestone 4 of 6 is implemented and awaiting review.** A final model has been trained, saved and evaluated, and a local API serves its predictions and explanations. There is no website yet.
 
 | Status | Work |
 |---|---|
-| Done | Python environment, dataset inspection, preprocessing, leakage-safe splits, feature experiments, model comparison, source-leakage experiment, final pipeline and evaluation, tests |
-| Planned | FastAPI backend, working React and TypeScript website, final verification |
+| Done | Python environment, dataset inspection, preprocessing, leakage-safe splits, feature experiments, model comparison, source-leakage experiment, final pipeline and evaluation, FastAPI backend, tests |
+| Planned | Working React and TypeScript website, final verification |
 
 **Test result:** a Linear SVM reached F1 0.9894 for Spam on this dataset's held-out test split, or 0.9727 on messages with no close match in training. **These scores don't show real-world performance.** When trained on one number style and scored on another, as a stand-in for an unfamiliar source, F1 fell to 0.8400 and 21.3% of legitimate messages were flagged. See the [model card](docs/model-card.md).
 
@@ -96,12 +96,41 @@ python -c "from app.ml.predict import load_pipeline; print(load_pipeline().predi
 
 The test split can be evaluated only once, so `--split test` refuses to run while its report exists. The [model card](docs/model-card.md#reproducibility) explains this.
 
+## Run the API
+
+The saved model must exist first. If it doesn't, the API still starts, and `/api/health` explains what to do. Start the API from the `backend` folder, and leave it running:
+
+```powershell
+cd backend
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+| Address | Purpose |
+|---|---|
+| `http://127.0.0.1:8000/api/health` | Is the API up, and is the model loaded? |
+| `http://127.0.0.1:8000/api/model-info` | Model details, measured results and limitations |
+| `http://127.0.0.1:8000/docs` | Interactive documentation, which also lets you try the classify endpoint. Its page loads scripts from the internet. |
+
+To classify a message, run this in a second terminal:
+
+```powershell
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/api/classify -ContentType application/json -Body '{"text": "You have won a free prize. Click here to claim."}' | ConvertTo-Json -Depth 5
+```
+
+The response gives a label, a score and the terms that influenced it. `confidence` is always `null`, because this model doesn't provide a meaningful probability. Text can be up to 20,000 characters, and it isn't stored or logged.
+
+To compare API results with direct inference on all validation messages, run this from `backend`:
+
+```powershell
+python -m training.verify_api
+```
+
 ## Repository layout
 
 ```text
 spamshield-ai/
 ├── backend/
-│   ├── app/ml/                    Preprocessing shared by training and the future API
+│   ├── app/                       The API, and preprocessing shared with training
 │   ├── data/
 │   │   ├── README.md              How to get the dataset
 │   │   ├── processed/             Generated split file (not committed)

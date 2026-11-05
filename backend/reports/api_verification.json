@@ -1,0 +1,36 @@
+{
+  "explanation_total_mismatches": 0,
+  "frozen_model": {
+    "content_unchanged": true,
+    "file_sha256": "ed9f16df062afe7bb4ba3dd1acb6473d5119aa643ae1bcdf9d042279de788b2c",
+    "file_unchanged": true,
+    "model_content_sha256": "6f5135d9e9e3832ef8513607fe645661abfc84096c983ba7430378652a10c2e2"
+  },
+  "in_process_request_latency": {
+    "median_ms": 2.48,
+    "p95_ms": 3.75
+  },
+  "label_mismatches": 0,
+  "metrics_on_accepted_rows": {
+    "accuracy": 0.9893,
+    "f1_spam": 0.9888,
+    "ham_flagged_as_spam": 104,
+    "precision_spam": 0.9884,
+    "recall_spam": 0.9891,
+    "spam_missed": 98,
+    "true_ham": 9846,
+    "true_spam": 8881
+  },
+  "other_failures": 0,
+  "other_failures_by_status": {},
+  "responses_with_a_confidence_value": 0,
+  "rows_accepted": 18929,
+  "rows_rejected_by_reason": {
+    "body_too_large": 1,
+    "no_recognised_terms": 33,
+    "text_too_long": 119
+  },
+  "rows_sent": 19082,
+  "score_mismatches": 0,
+  "split_used": "validation"
+}

@@ -1,8 +1,13 @@
 # Direct dependencies for the code that exists so far. Versions are pinned for reproducibility.
 # Later milestones add their own packages here.
+fastapi==0.162.0
+httpx2==2.16.0
 joblib==1.6.0
 numpy==2.5.4
 pandas==3.1.1
+pydantic==2.14.3
 pytest==9.2.0
 scikit-learn==1.9.1
 scipy==1.18.1
+starlette==1.10.0
+uvicorn==0.54.0

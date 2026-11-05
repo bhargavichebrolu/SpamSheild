@@ -177,15 +177,26 @@ These are expected from the results above. Specific real-world rates haven't bee
 
 - Legitimate email from an unfamiliar source or topic being flagged as spam
 - Spam with no close match in training being missed
-- Short messages, which give the model few words to use. For example, the harmless text `Example message text` is classified as Spam, which is a single example and not a measured rate
+- Short messages, which give the model few words to use. The model's intercept is positive (+0.71), so its starting score leans towards spam, and a message needs enough Ham-leaning terms to overcome that. For example, the harmless text `Example message text` is classified as Spam, which is a single example and not a measured rate
+- Odd word associations learned from this dataset. In one test message, `congratulations` pushed the score towards Ham, and the API's explanations will show patterns like this
 - Messages with few or no known words, such as other languages, where the result says little
 - Text after the first 20,000 characters, which the model doesn't read
 
 ## Confidence and calibration
 
-**This model doesn't provide a probability.** A Linear SVM produces a score, where the sign gives the label and a larger size means further from the decision boundary. That score isn't a percentage or a chance of being correct, and it must not be displayed as one.
+**This model doesn't provide a probability.** A Linear SVM produces a score, where the sign gives the label and a larger size means further from the decision boundary. That score isn't a percentage or a chance of being correct, and it must not be displayed as one. The API's `confidence` field is therefore always `null`.
 
 Calibrating it into a probability would change the frozen pipeline after its one test evaluation, so that's future work needing its own held-out data.
+
+## Explanations
+
+The API explains each score using the model's own numbers. A Linear SVM's score is a sum:
+
+`score = intercept + sum(TF-IDF value × learned weight)`, for each term in the message
+
+So each term's contribution is calculated exactly, with no approximation, and the parts add up to the score. Across 18,929 validation messages sent through the API, they did.
+
+**This shows which terms moved this score, and nothing more.** It doesn't show why a message is spam, it doesn't show what would happen if the wording changed, and it can reveal patterns from the training data rather than anything meaningful about the message. TF-IDF values also depend on the whole message's length, so a word's contribution differs between messages.
 
 ## Reproducibility
 
@@ -234,6 +245,7 @@ Together they connect the test result to a model: the [test report](../backend/r
 - The frozen file's hash was the same before and after.
 
 **Limits of the fingerprint:**
+- **Matching fingerprints don't prove matching real-world performance.** They show matching stored values and configuration, under this method. How well a model works still depends on the email it sees and the environment it runs in.
 - It's an exact match on stored numbers, so it was only verified on this computer and these package versions. A different processor or library could change the last digits of a weight, and so change the fingerprint, even with a nearly identical model.
 - It includes preprocessing results on six sample strings, so it catches behaviour changes that affect those strings, but not every possible change.
 

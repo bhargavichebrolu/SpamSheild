@@ -830,6 +830,19 @@ Agreed by the project owner on 2026-11-05 when approving the milestone plan.
 - After freezing the pipeline, evaluate the test set once, reporting overall and similarity-band results with sample counts.
 - Avoid broad hyperparameter searches unless a small controlled experiment shows they are feasible.
 
+### Milestone 3 model identity
+
+- Record a deterministic model-content fingerprint separately from the serialized file's SHA-256, without retraining or overwriting the frozen model.
+
+### Milestone 4 requirements
+
+- Provide health, email classification and model information endpoints, with clear validation and error responses.
+- Limit input to 20,000 characters.
+- Load the frozen pipeline without importing training modules, with no retraining or modification of it.
+- Return no probability or confidence percentage, because the selected Linear SVM doesn't provide meaningful calibrated probabilities.
+- Explain predictions using a technically justified, model-supported method.
+- Test valid, empty and oversized input, model loading, prediction and error handling, and that API predictions match direct inference from the frozen pipeline.
+
 ### Website (Milestone 5)
 
 The website is a required deliverable of Milestone 5: a working React and TypeScript frontend connected to the FastAPI backend, not screenshots or a design mock-up. When implemented:

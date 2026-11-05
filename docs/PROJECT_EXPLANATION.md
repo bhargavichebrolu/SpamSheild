@@ -2,7 +2,7 @@
 
 This document explains SpamShield AI as one connected system. It grows with each milestone and describes only what exists now. Anything not built yet is listed under [Not built yet](#not-built-yet).
 
-**Current state:** Milestone 3. The project can verify its dataset, prepare it, compare models, and train, save and load a final pipeline. It has no API or frontend yet. The [model card](model-card.md) has the full results and limitations.
+**Current state:** Milestone 4. The project can verify its dataset, prepare it, compare models, train a final pipeline, and serve predictions and explanations through a local API. It has no website yet. The [model card](model-card.md) has the full results and limitations.
 
 ## Problem and objective
 
@@ -49,6 +49,9 @@ spam_Emails_data.csv (raw, not in Git, never changed)
         │                       pipeline_metadata.json
         ▼
      final_evaluation.py ──► validation rehearsal, then one test evaluation
+        │
+        ▼
+     FastAPI (app/main.py) loads the saved pipeline ──► /api/classify
 ```
 
 Each script's output is the next one's input, so the [architecture document](architecture.md) shows the same flow by component.
@@ -218,14 +221,70 @@ Retraining reproduces identical learned values and predictions, but the file's b
 - **File hash (`pipeline_sha256`):** a SHA-256 of the file's bytes. It proves this is exactly the file that was evaluated.
 - **Content fingerprint (`model_content_sha256`):** a SHA-256 of what the model learned and how it's configured, in a fixed order and encoding. It proves two files hold the same model, even if their bytes differ.
 
-A fresh retrain changes the first, but gave the same second. The [model card](model-card.md#two-hashes-identify-the-model) has the values, what was verified and the limits.
+A fresh retrain changes the first, but gave the same second. The [model card](model-card.md#two-hashes-identify-the-model) has the values, what was verified and the limits. A matching fingerprint shows matching stored values and configuration. It doesn't prove matching real-world performance.
+
+## Backend request flow
+
+The API turns the saved pipeline into something other programs can call. Start it from the `backend` folder:
+
+```powershell
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+**At startup,** `load_verified_model` checks the model file's hash against its metadata before loading it, because loading a tampered file could run code. It then checks the content fingerprint and the model's structure. If anything fails, the API still starts, so `/api/health` can explain the problem, and model endpoints return `503`.
+
+**For each request to `POST /api/classify`:**
+
+1. **Size check:** a body over 256 KB gets a `413`. The rest of the upload is read first, because replying early resets the connection, and the client would see a network failure rather than this error.
+2. **Validation:** Pydantic rejects missing, non-string, empty or over-long text with a `422`.
+3. **Classification:** `classify` preprocesses the text, turns it into TF-IDF values, and asks the classifier for a label and score.
+4. **Explanation:** `explain` calculates each term's contribution.
+5. **Response:** the label, score and explanation are returned, and the message isn't stored.
+
+### Rejecting input
+
+| Input | Response | Why |
+|---|---|---|
+| Over 20,000 characters | `422 text_too_long` | The model only reads that many, so accepting more would silently ignore part of the message |
+| Empty or only whitespace | `422 text_empty` | Nothing to classify |
+| No word of two or more characters | `422 no_usable_words` | The word features would be empty |
+| No word in the model's vocabulary | `422 no_recognised_terms` | The score would just be the intercept, so the label would say nothing about the message |
+
+### Privacy
+
+FastAPI's default validation errors repeat the rejected input, which here could be someone's email. A custom handler returns fixed messages instead. If classification fails unexpectedly, only the error's type is logged, because its message could contain the text. Uvicorn's access log records paths and status codes, not bodies. Real-server testing confirmed that a marker word in submitted text never reached the logs.
+
+### Why there's no confidence value
+
+A Linear SVM produces a score, not a probability. Showing it as a percentage would suggest a certainty the model can't support, so `confidence` is always `null`, and `score` is returned with a note on what it means.
+
+## Prediction and explanation flow
+
+A Linear SVM's score is a sum:
+
+`score = intercept + sum(TF-IDF value × learned weight)`
+
+So `explain` can calculate each term's contribution exactly: its TF-IDF value in this message, times the weight the model learned for it. It returns the strongest terms each way, plus `other_terms_total` for the rest, so the parts visibly add up to the score. `verify_api.py` confirmed they did across 18,929 validation messages.
+
+**This is a technically justified method because it uses the model's own calculation,** with no separate approximation like SHAP or LIME. It's still limited:
+- It shows which terms moved this score, not why a message is spam. For example, in one test message `congratulations` pushed the score towards Ham, which reflects this dataset, not a meaningful rule.
+- Only terms from the submitted message can appear, so it can't reveal the removed words, which can include surnames.
+- Terms appear as the model sees them, so `escapenumber` means a number.
+
+The explanation also revealed a limitation: the **intercept is +0.71**, so the starting score leans towards spam. A short message with few recognised words can easily come out as spam.
 
 ## Source-file map
 
 | File | Responsibility | Used by |
 |---|---|---|
 | [`backend/app/ml/preprocess.py`](../backend/app/ml/preprocess.py) | Text preprocessing for training and inference | `prepare_data.py`, `features.py`, and later the API through the saved pipeline |
-| [`backend/app/ml/predict.py`](../backend/app/ml/predict.py) | Load the saved pipeline, and calculate its content fingerprint | `final_evaluation.py`, `train_final.py`, and later the API |
+| [`backend/app/ml/predict.py`](../backend/app/ml/predict.py) | Verified loading, content fingerprint and classification | The API, `final_evaluation.py`, `train_final.py` |
+| [`backend/app/ml/explain.py`](../backend/app/ml/explain.py) | Calculate each term's contribution to a score | `predict.py` |
+| [`backend/app/ml/model_info.py`](../backend/app/ml/model_info.py) | Describe the model from its metadata and reports | `routes.py` |
+| [`backend/app/main.py`](../backend/app/main.py) | Create the application: startup, middleware and error responses | Uvicorn |
+| [`backend/app/api/routes.py`](../backend/app/api/routes.py) | The three endpoints | `main.py` |
+| [`backend/app/schemas/prediction.py`](../backend/app/schemas/prediction.py) | Request and response shapes | `routes.py` |
+| [`backend/app/config.py`](../backend/app/config.py) | API limits and allowed origins | `main.py`, `predict.py`, `model_info.py`, schemas |
 | [`backend/training/config.py`](../backend/training/config.py) | Shared paths, seed and split shares | Training scripts |
 | [`backend/training/inspect_dataset.py`](../backend/training/inspect_dataset.py) | Verify the dataset; shared loading and hashing helpers | Other training scripts |
 | [`backend/training/analyse_format.py`](../backend/training/analyse_format.py) | Describe the text's format | Informs `preprocess.py` |
@@ -240,9 +299,10 @@ A fresh retrain changes the first, but gave the same second. The [model card](mo
 | [`backend/training/source_leakage.py`](../backend/training/source_leakage.py) | Measure dependence on likely source signals | Informs `FINAL_MODEL` |
 | [`backend/training/train_final.py`](../backend/training/train_final.py) | Fit, save and describe the final pipeline | `final_evaluation.py`, and later the API through the saved file |
 | [`backend/training/final_evaluation.py`](../backend/training/final_evaluation.py) | Evaluate the frozen pipeline, with one test run | The model card |
+| [`backend/training/verify_api.py`](../backend/training/verify_api.py) | Compare API results with direct inference on validation data | Milestone 4's acceptance check |
 | [`backend/tests/`](../backend/tests/) | Automated tests on made-up data | `pytest` |
-| [`backend/reports/`](../backend/reports/) | Generated results | The dataset and model cards, this document, and later the web application |
-| [`backend/models/`](../backend/models/) | The saved pipeline (not in Git) and its metadata | Later the API |
+| [`backend/reports/`](../backend/reports/) | Generated results | The dataset and model cards, this document, `/api/model-info`, and later the website |
+| [`backend/models/`](../backend/models/) | The saved pipeline (not in Git) and its metadata | The API |
 | [`backend/requirements.txt`](../backend/requirements.txt) | Pinned Python dependencies | `pip` |
 | [`backend/pytest.ini`](../backend/pytest.ini) | Lets tests import from `backend/` and tells `pytest` where they are | `pytest` |
 
@@ -259,7 +319,7 @@ Each source file also has a detailed log in [`file-explanations/`](file-explanat
 
 ## Testing strategy so far
 
-The 162 tests use small made-up data, so they run quickly without the real dataset and contain no private email. They cover:
+The 260 tests mostly use small made-up data, so they run quickly without the real dataset and contain no private email. Three tests use the real saved model when it's present, and are skipped in a fresh copy of the repository. They cover:
 
 - Dataset loading, validation, hashing and statistics
 - Each preprocessing step, and that repeating preprocessing doesn't change the result for normal-length messages
@@ -270,12 +330,31 @@ The 162 tests use small made-up data, so they run quickly without the real datas
 - Saving and reloading a pipeline, including with no training code imported
 - That a changed model or split file is refused, and that the test split can't be evaluated twice
 - That the content fingerprint survives reloading and different hash seeds, and detects changed values
+- API responses for valid, empty, oversized and invalid input, and an unavailable or tampered model
+- That API predictions match direct inference, and explanations add up to the score
+- That errors and logs never contain the submitted text
 
 Run them from the repository root:
 
 ```powershell
 python -m pytest backend
 ```
+
+Beyond the tests, [`verify_api.py`](../backend/training/verify_api.py) sends every validation message through the API with the real model, and compares each result with direct inference:
+
+| Check | Result |
+|---|---:|
+| Messages sent | 19,082 |
+| Accepted, with label and score compared | 18,929 |
+| Refused: over 20,000 characters | 119 |
+| Refused: no recognised words | 33 |
+| Refused: body over 256 KB | 1 |
+| Label mismatches | 0 |
+| Score mismatches | 0 |
+| Explanations not adding up to the score | 0 |
+| Unexpected failures | 0 |
+
+A real server was also tested over HTTP. That found a bug the test client can't show, which is why one test now starts a real server.
 
 ## Limitations so far
 
@@ -285,12 +364,13 @@ python -m pytest backend
 - The cross-style results suggest performance could fall sharply on unfamiliar sources.
 - Overall scores are lifted by near-copies of training messages.
 - The model gives a score, not a probability.
+- Short messages lean towards spam, because the intercept is positive.
 - The similarity check uses single words and one similarity measure, so it's an estimate of template overlap.
+- The API is for local use. It has no authentication or rate limiting, and hasn't been hardened for public deployment.
 
 ## Not built yet
 
 | Topic | Planned milestone |
 |---|---|
-| Backend request flow, prediction and explanations | 4 |
-| Frontend request flow and display | 5 |
+| Website, frontend request flow and display | 5 |
 | Final limitations and alternative approaches | Updated in each milestone, finalised in 6 |
