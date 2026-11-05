@@ -22,6 +22,7 @@ from starlette.exceptions import HTTPException
 from app.api.routes import ClassificationFailed, router
 from app.config import ALLOWED_ORIGINS, MAX_BODY_BYTES, MAX_DISCARD_BYTES, MAX_INPUT_CHARS
 from app.ml.predict import ClassificationRejected, LoadedModel, ModelUnavailable, load_verified_model
+from app.ml.results import ResultsUnavailable
 
 logger = logging.getLogger("spamshield.api")
 
@@ -163,6 +164,10 @@ def create_app(model_loader: Callable[[], LoadedModel] = load_verified_model) ->
     @app.exception_handler(ModelUnavailable)
     async def handle_model_unavailable(_: Request, unavailable: ModelUnavailable) -> JSONResponse:
         return _error_response(503, "model_unavailable", str(unavailable))
+
+    @app.exception_handler(ResultsUnavailable)
+    async def handle_results_unavailable(_: Request, unavailable: ResultsUnavailable) -> JSONResponse:
+        return _error_response(503, "results_unavailable", str(unavailable))
 
     @app.exception_handler(ClassificationFailed)
     async def handle_classification_failed(_: Request, __: ClassificationFailed) -> JSONResponse:

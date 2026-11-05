@@ -13,6 +13,7 @@ from fastapi.responses import JSONResponse
 
 from app.ml.model_info import build_model_info
 from app.ml.predict import ClassificationRejected, LoadedModel, ModelUnavailable, classify
+from app.ml.results import build_dataset_results, build_models_results
 from app.schemas.prediction import (
     ClassifyRequest,
     ClassifyResponse,
@@ -20,6 +21,7 @@ from app.schemas.prediction import (
     HealthResponse,
     ModelInfoResponse,
 )
+from app.schemas.results import DatasetResults, ModelsResults
 
 logger = logging.getLogger("spamshield.api")
 
@@ -96,3 +98,26 @@ def classify_email(body: ClassifyRequest, request: Request):
 def model_info(request: Request):
     """Describe the model, its measured results, and its limitations."""
     return build_model_info(_loaded_model(request))
+
+
+@router.get(
+    "/results/models",
+    response_model=ModelsResults,
+    responses={503: {"model": ErrorResponse, "description": "A saved report can't be read."}},
+)
+def models_results():
+    """Return the saved model comparison, final evaluation and source-leakage results.
+
+    This only reads committed reports, so it works without the model being loaded.
+    """
+    return build_models_results()
+
+
+@router.get(
+    "/results/dataset",
+    response_model=DatasetResults,
+    responses={503: {"model": ErrorResponse, "description": "A saved report can't be read."}},
+)
+def dataset_results():
+    """Return verified aggregate statistics about the dataset. It includes no email text."""
+    return build_dataset_results()

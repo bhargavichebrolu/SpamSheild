@@ -46,7 +46,7 @@ So each term's contribution is exact. It's the model's real calculation, not an 
 
 ## 7. How its output is used next
 
-`predict.py`'s `classify` includes it in each result, and `routes.py` returns it. The website will display it in Milestone 5.
+`predict.py`'s `classify` includes it in each result, and `routes.py` returns it. The website displays it through `TermContributions.tsx`.
 
 ## 8. Tests
 

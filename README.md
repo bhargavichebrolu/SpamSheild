@@ -4,12 +4,14 @@ An explainable email spam classifier, planned as an end-to-end machine learning 
 
 ## Project status
 
-**Milestone 4 of 6 is implemented and awaiting review.** A final model has been trained, saved and evaluated, and a local API serves its predictions and explanations. There is no website yet.
+**Milestone 5 of 6 is implemented and awaiting review.** A final model has been trained, saved and evaluated. A local API serves its predictions and explanations, and a local website lets you use them in a browser.
 
 | Status | Work |
 |---|---|
-| Done | Python environment, dataset inspection, preprocessing, leakage-safe splits, feature experiments, model comparison, source-leakage experiment, final pipeline and evaluation, FastAPI backend, tests |
-| Planned | Working React and TypeScript website, final verification |
+| Done | Python environment, dataset inspection, preprocessing, leakage-safe splits, feature experiments, model comparison, source-leakage experiment, final pipeline and evaluation, FastAPI backend, React and TypeScript website, tests |
+| Planned | Final verification and documentation |
+
+![The classifier page, showing a made-up spam-like message with its label, decision score and influential words](docs/screenshots/classifier-1280.png)
 
 **Test result:** a Linear SVM reached F1 0.9894 for Spam on this dataset's held-out test split, or 0.9727 on messages with no close match in training. **These scores don't show real-world performance.** When trained on one number style and scored on another, as a stand-in for an unfamiliar source, F1 fell to 0.8400 and 21.3% of legitimate messages were flagged. See the [model card](docs/model-card.md).
 
@@ -25,9 +27,38 @@ The dataset's licence is not verified, so the raw data is not included or redist
 - [Development log](docs/DEVELOPMENT_LOG.md)
 - [Source-file explanations](docs/file-explanations/)
 
+## Run the website
+
+The saved model must already exist. If you've just cloned the repository, follow [Setup](#setup) and the training steps below first.
+
+**Terminal 1, the API.** Run this from the repository root, with your Python environment active:
+
+```powershell
+cd backend
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+**Terminal 2, the website.** Run this from the repository root. You only need `npm install` the first time:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Then open **http://localhost:5173** in your browser, and leave both terminals running. Press `Ctrl+C` in each to stop.
+
+| Page | Address | What it shows |
+|---|---|---|
+| Classify | http://localhost:5173/ | Paste email text to get a label, a decision score and the words that influenced it |
+| Models | http://localhost:5173/models | Saved model comparison, test results and the source-leakage experiment |
+| Dataset | http://localhost:5173/dataset | Verified dataset statistics |
+
+The decision score isn't a probability, so no confidence percentage is shown. The website sends text only to the local API, and doesn't store it.
+
 ## Setup
 
-These commands are for Windows PowerShell, run from the repository root, and use Python 3.14.
+These commands are for Windows PowerShell, run from the repository root, and use Python 3.14. The website also needs Node 24.
 
 1. Create and activate the virtual environment, then install the dependencies:
 
@@ -47,13 +78,23 @@ These commands are for Windows PowerShell, run from the repository root, and use
 
 2. Get the dataset by following the [dataset instructions](backend/data/README.md). It is not included in this repository.
 
-## Run
+## Test
 
-Run the tests. They use made-up data, so they don't need the dataset:
+Run the backend tests from the repository root. They mostly use made-up data, so they don't need the dataset. A few use the real model when it's present, and skip otherwise:
 
 ```powershell
 python -m pytest backend
 ```
+
+Run the website's tests from the `frontend` folder:
+
+```powershell
+npm test                    # Unit tests, with the network replaced
+npm run test:e2e            # Browser tests with the real API and model. Needs ports 8000 and 5173 free, and Edge
+npm run test:e2e:api-down   # Browser tests with the API stopped
+```
+
+## Train and inspect
 
 Inspect the dataset. This checks the file's hash and writes [`backend/reports/dataset_inspection.json`](backend/reports/dataset_inspection.json):
 
@@ -96,19 +137,16 @@ python -c "from app.ml.predict import load_pipeline; print(load_pipeline().predi
 
 The test split can be evaluated only once, so `--split test` refuses to run while its report exists. The [model card](docs/model-card.md#reproducibility) explains this.
 
-## Run the API
+## Use the API directly
 
-The saved model must exist first. If it doesn't, the API still starts, and `/api/health` explains what to do. Start the API from the `backend` folder, and leave it running:
-
-```powershell
-cd backend
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
-```
+The website uses this API, and you can also call it yourself. Start it as shown under [Run the website](#run-the-website). If the saved model doesn't exist, it still starts, and `/api/health` explains what to do.
 
 | Address | Purpose |
 |---|---|
 | `http://127.0.0.1:8000/api/health` | Is the API up, and is the model loaded? |
 | `http://127.0.0.1:8000/api/model-info` | Model details, measured results and limitations |
+| `http://127.0.0.1:8000/api/results/models` | Saved model comparison, final evaluation and source-leakage results |
+| `http://127.0.0.1:8000/api/results/dataset` | Verified aggregate dataset statistics |
 | `http://127.0.0.1:8000/docs` | Interactive documentation, which also lets you try the classify endpoint. Its page loads scripts from the internet. |
 
 To classify a message, run this in a second terminal:
@@ -141,7 +179,11 @@ spamshield-ai/
 │   ├── training/                  Inspection, data preparation, experiments and training
 │   ├── pytest.ini
 │   └── requirements.txt
-├── docs/                          Requirements, explanations and logs
+├── frontend/
+│   ├── src/                       The React and TypeScript website, and its unit tests
+│   ├── tests/e2e/                 Browser tests with the real backend
+│   └── package.json
+├── docs/                          Requirements, explanations, logs and screenshots
 ├── .gitignore
 └── README.md
 ```

@@ -52,7 +52,7 @@ The test run has already been used, so `--split test` now stops with an error.
 
 ## 7. How its output is used next
 
-Its results are in the [model card](../model-card.md), and the website can display the report in Milestone 5.
+Its results are in the [model card](../model-card.md), and the website's Models page displays them.
 
 ## 8. Tests
 

@@ -4,7 +4,7 @@ Source: [`routes.py`](../../backend/app/api/routes.py). `backend/app/api/__init_
 
 ## 1. Why the file exists
 
-It defines what the API offers: the three endpoints.
+It defines what the API offers: three endpoints for the model, and two read-only endpoints for saved results.
 
 ## 2. Responsibility and design intention
 
@@ -17,6 +17,8 @@ It connects requests to `app/ml`, and shapes the responses. It holds no model lo
 | `GET /api/health` | None | Status, and whether the model is loaded |
 | `POST /api/classify` | `{"text": "..."}` | Label, `confidence: null`, score, version, text length, recognised terms and explanation |
 | `GET /api/model-info` | None | Model details, both hashes, measured results and limitations |
+| `GET /api/results/models` | None | Saved model comparison, final evaluation and source-leakage results |
+| `GET /api/results/dataset` | None | Verified aggregate statistics about the dataset |
 
 ## 4. Important functions and variables
 
@@ -25,6 +27,7 @@ It connects requests to `app/ml`, and shapes the responses. It holds no model lo
 | `health` | Returns `200`, or `503` with the reason |
 | `classify_email` | Classifies one message |
 | `model_info` | Describes the model |
+| `models_results`, `dataset_results` | Return saved results, which don't need the model loaded |
 | `_loaded_model` | Returns the model, or raises `ModelUnavailable` |
 | `ClassificationFailed` | Replaces an unexpected error, and carries no details |
 
@@ -38,15 +41,15 @@ It connects requests to `app/ml`, and shapes the responses. It holds no model lo
 ## 6. Dependencies
 
 - **Packages:** `fastapi`.
-- **Project files:** `app/ml/model_info.py`, `app/ml/predict.py`, `app/schemas/prediction.py`.
+- **Project files:** `app/ml/model_info.py`, `app/ml/predict.py`, `app/ml/results.py`, `app/schemas/prediction.py`, `app/schemas/results.py`.
 
 ## 7. How its output is used next
 
-`main.py` includes this router. The website will call these endpoints in Milestone 5.
+`main.py` includes this router, and the website calls these endpoints through `frontend/src/services/api.ts`.
 
 ## 8. Tests
 
-Tests are in [`test_api.py`](../../backend/tests/test_api.py). From the repository root:
+Tests are in [`test_api.py`](../../backend/tests/test_api.py) and [`test_results_api.py`](../../backend/tests/test_results_api.py). From the repository root:
 
 ```powershell
 python -m pytest backend

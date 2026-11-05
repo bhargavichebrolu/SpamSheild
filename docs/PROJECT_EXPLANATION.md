@@ -2,7 +2,7 @@
 
 This document explains SpamShield AI as one connected system. It grows with each milestone and describes only what exists now. Anything not built yet is listed under [Not built yet](#not-built-yet).
 
-**Current state:** Milestone 4. The project can verify its dataset, prepare it, compare models, train a final pipeline, and serve predictions and explanations through a local API. It has no website yet. The [model card](model-card.md) has the full results and limitations.
+**Current state:** Milestone 5. The project can verify its dataset, prepare it, compare models, train a final pipeline, and serve predictions and explanations through a local API, with a working local website on top. The [model card](model-card.md) has the full results and limitations.
 
 ## Problem and objective
 
@@ -52,6 +52,9 @@ spam_Emails_data.csv (raw, not in Git, never changed)
         │
         ▼
      FastAPI (app/main.py) loads the saved pipeline ──► /api/classify
+        │                                               /api/results/*
+        ▼
+     React website (frontend/) ──► a person's browser
 ```
 
 Each script's output is the next one's input, so the [architecture document](architecture.md) shows the same flow by component.
@@ -273,6 +276,57 @@ So `explain` can calculate each term's contribution exactly: its TF-IDF value in
 
 The explanation also revealed a limitation: the **intercept is +0.71**, so the starting score leans towards spam. A short message with few recognised words can easily come out as spam.
 
+## Frontend request flow
+
+The website is a React and TypeScript application, which runs in the browser and gets everything from the API. It contains no copy of the model, and no results of its own.
+
+```text
+You paste text, and click Classify
+   │
+   ▼ ClassifierPage cancels any earlier request, and shows a loading state
+   ▼ services/api.ts sends POST http://127.0.0.1:8000/api/classify with {"text": "..."}
+   ▼ the API validates the text, classifies it and explains the score
+   ▼ services/api.ts returns the result, or an ApiError saying what kind of failure it was
+   ▼ PredictionResult and TermContributions display the result
+```
+
+The Models and Dataset pages work the same way, with `GET /api/results/models` and `GET /api/results/dataset`.
+
+### How it avoids showing anything made up
+
+- **All numbers come from responses:** if the API fails, the page shows an error and no numbers.
+- **Stubbed responses exist only in tests:** a test scans the application's source, and a check confirms test data isn't in the production bundle.
+- **Browser tests use the real model:** they compare what's on screen with direct API calls and the report files.
+
+A source scan can't prove every number is real, which is why the browser comparison also exists.
+
+### How it presents the result
+
+- **Decision score, not confidence:** the raw SVM score is labelled a decision score, with a plain statement that it isn't a probability. No percentage appears with a prediction. Percentages elsewhere on the site are shares of dataset rows.
+- **Short-message caution:** with fewer than 5 recognised words, the page adds a caution. **This threshold is a display warning, not a measured reliability boundary,** as the page says. It only adds text, and the label and score are unchanged.
+- **Explanations:** words appear with their contributions and bars, and a table shows how the parts add up to the score.
+
+### Handling failures
+
+| Situation | What the page does |
+|---|---|
+| Waiting for a response | Shows a loading message, and disables Classify |
+| Blank text | Disables Classify |
+| Over 20,000 characters | Warns, and shows the server's refusal if submitted |
+| Text can't be classified | Shows the server's explanation |
+| API not running | Says it can't be reached, shows the command to start it, and offers a retry |
+| Model or report unavailable | Shows the server's reason, with a retry and no results |
+| Text edited after a result | Marks the result as out of date |
+| A slow earlier response arrives late | Ignores it |
+
+### Privacy
+
+Message text stays in memory, and goes only to the local API. It's never placed in the URL or browser storage, and the site loads no external scripts, fonts or analytics.
+
+### Responsive layout
+
+The site was tested at 360, 768 and 1280 pixels wide. Wide tables scroll inside their own area and say so, so the page itself doesn't scroll sideways. The tests passed before I noticed cut-off text and captions on phones by looking at screenshots. So a browser test now checks that text fits, and that every overflowing table shows a hint.
+
 ## Source-file map
 
 | File | Responsibility | Used by |
@@ -282,8 +336,18 @@ The explanation also revealed a limitation: the **intercept is +0.71**, so the s
 | [`backend/app/ml/explain.py`](../backend/app/ml/explain.py) | Calculate each term's contribution to a score | `predict.py` |
 | [`backend/app/ml/model_info.py`](../backend/app/ml/model_info.py) | Describe the model from its metadata and reports | `routes.py` |
 | [`backend/app/main.py`](../backend/app/main.py) | Create the application: startup, middleware and error responses | Uvicorn |
-| [`backend/app/api/routes.py`](../backend/app/api/routes.py) | The three endpoints | `main.py` |
+| [`backend/app/api/routes.py`](../backend/app/api/routes.py) | The five endpoints | `main.py` |
 | [`backend/app/schemas/prediction.py`](../backend/app/schemas/prediction.py) | Request and response shapes | `routes.py` |
+| [`backend/app/ml/results.py`](../backend/app/ml/results.py) | Read saved reports for the website | `routes.py` |
+| [`backend/app/schemas/results.py`](../backend/app/schemas/results.py) | Results shapes, which act as an allowlist | `routes.py` |
+| [`frontend/src/services/api.ts`](../frontend/src/services/api.ts) | All calls to the API | Pages |
+| [`frontend/src/types/api.ts`](../frontend/src/types/api.ts) | API response types | The API service, pages and components |
+| [`frontend/src/App.tsx`](../frontend/src/App.tsx), [`main.tsx`](../frontend/src/main.tsx) | Page layout, routes and startup | The browser |
+| [`frontend/src/pages/`](../frontend/src/pages/) | Classifier, Models and Dataset pages | `App.tsx` |
+| [`frontend/src/components/`](../frontend/src/components/) | Form, result, explanation, tables and messages | Pages |
+| [`frontend/src/hooks/useApiResource.ts`](../frontend/src/hooks/useApiResource.ts) | Loading, errors and retries | Pages |
+| [`frontend/src/utils/format.ts`](../frontend/src/utils/format.ts) | Display formatting | Pages and components |
+| [`frontend/tests/e2e/`](../frontend/tests/e2e/) | Browser tests with the real backend and model | Playwright |
 | [`backend/app/config.py`](../backend/app/config.py) | API limits and allowed origins | `main.py`, `predict.py`, `model_info.py`, schemas |
 | [`backend/training/config.py`](../backend/training/config.py) | Shared paths, seed and split shares | Training scripts |
 | [`backend/training/inspect_dataset.py`](../backend/training/inspect_dataset.py) | Verify the dataset; shared loading and hashing helpers | Other training scripts |
@@ -301,7 +365,7 @@ The explanation also revealed a limitation: the **intercept is +0.71**, so the s
 | [`backend/training/final_evaluation.py`](../backend/training/final_evaluation.py) | Evaluate the frozen pipeline, with one test run | The model card |
 | [`backend/training/verify_api.py`](../backend/training/verify_api.py) | Compare API results with direct inference on validation data | Milestone 4's acceptance check |
 | [`backend/tests/`](../backend/tests/) | Automated tests on made-up data | `pytest` |
-| [`backend/reports/`](../backend/reports/) | Generated results | The dataset and model cards, this document, `/api/model-info`, and later the website |
+| [`backend/reports/`](../backend/reports/) | Generated results | The dataset and model cards, this document, and the API, which serves them to the website |
 | [`backend/models/`](../backend/models/) | The saved pipeline (not in Git) and its metadata | The API |
 | [`backend/requirements.txt`](../backend/requirements.txt) | Pinned Python dependencies | `pip` |
 | [`backend/pytest.ini`](../backend/pytest.ini) | Lets tests import from `backend/` and tells `pytest` where they are | `pytest` |
@@ -319,7 +383,15 @@ Each source file also has a detailed log in [`file-explanations/`](file-explanat
 
 ## Testing strategy so far
 
-The 260 tests mostly use small made-up data, so they run quickly without the real dataset and contain no private email. Three tests use the real saved model when it's present, and are skipped in a fresh copy of the repository. They cover:
+The project has three kinds of test:
+
+| Tests | Count | What they use |
+|---|---:|---|
+| Backend (pytest) | 290 | Mostly small made-up data. A few use the real model, reports or word lists when present, and skip in a fresh copy of the repository |
+| Frontend unit tests (Vitest) | 90 | Made-up responses, with the network replaced |
+| Browser tests (Playwright) | 54 | **The real backend and frozen model, with nothing stubbed.** 50 run with the backend up, and 4 with it really stopped |
+
+The backend tests cover:
 
 - Dataset loading, validation, hashing and statistics
 - Each preprocessing step, and that repeating preprocessing doesn't change the result for normal-length messages
@@ -333,11 +405,19 @@ The 260 tests mostly use small made-up data, so they run quickly without the rea
 - API responses for valid, empty, oversized and invalid input, and an unavailable or tampered model
 - That API predictions match direct inference, and explanations add up to the score
 - That errors and logs never contain the submitted text
+- That saved results match the reports, and only permitted fields reach the website
 
-Run them from the repository root:
+The browser tests cover classification, explanations, every error type, privacy, displayed results against the report files, layouts at three widths, automated accessibility checks in both colour modes, and keyboard use.
+
+Run the backend tests from the repository root, and the others from the `frontend` folder:
 
 ```powershell
 python -m pytest backend
+
+cd frontend
+npm test
+npm run test:e2e
+npm run test:e2e:api-down
 ```
 
 Beyond the tests, [`verify_api.py`](../backend/training/verify_api.py) sends every validation message through the API with the real model, and compares each result with direct inference:
@@ -366,11 +446,14 @@ A real server was also tested over HTTP. That found a bug the test client can't 
 - The model gives a score, not a probability.
 - Short messages lean towards spam, because the intercept is positive.
 - The similarity check uses single words and one similarity measure, so it's an estimate of template overlap.
-- The API is for local use. It has no authentication or rate limiting, and hasn't been hardened for public deployment.
+- The API and website are for local use. There's no authentication or rate limiting, and they haven't been hardened for public deployment.
+- The short-message threshold is a judgement about what to display, not a measured boundary.
+- Automated accessibility checks catch only some problems. Nobody has tested the site with a screen reader.
 
 ## Not built yet
 
 | Topic | Planned milestone |
 |---|---|
-| Website, frontend request flow and display | 5 |
-| Final limitations and alternative approaches | Updated in each milestone, finalised in 6 |
+| Final limitations, alternative approaches and clean-setup check | Updated in each milestone, finalised in 6 |
+| Prediction history | Deferred |
+| Docker packaging | Optional, in 6 |

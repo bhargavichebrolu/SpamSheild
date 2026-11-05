@@ -852,3 +852,13 @@ The website is a required deliverable of Milestone 5: a working React and TypeSc
 - Show the actual implemented screens, and explain how the frontend calls the backend.
 - Include loading, validation and error states.
 - Do not claim the website exists until it has been implemented and verified running.
+
+Further Milestone 5 decisions:
+
+- Add two read-only results endpoints, for the model comparison and dataset pages.
+- Defer prediction history, which replaces its inclusion in Sections 6.1 and 8.5 for now.
+- Show a caution when fewer than five words are recognised, stating clearly that this threshold is a display warning and not a measured reliability boundary. It must not change the model's prediction or classification threshold.
+- Label the raw SVM score as a decision score, never a probability or confidence.
+- Keep the frozen model, its metadata and the training pipeline unchanged.
+- Keep dataset and model reports restricted to verified aggregate information, with no mock predictions or fabricated metrics in the application.
+- Verify responsive layouts at 360, 768 and 1280 pixels, and test the complete application with the real model.

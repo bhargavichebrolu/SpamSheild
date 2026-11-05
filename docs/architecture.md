@@ -1,24 +1,38 @@
 # Architecture
 
-This describes what exists now. The website doesn't exist yet, and is listed under [Planned](#planned).
+This describes what exists now.
 
 ## System overview
 
-The project has two parts that share one preprocessing module and connect through saved files. Training scripts run in order to produce a saved model, and the API loads that model and serves predictions.
+The project has three parts. Training scripts run ahead of time to produce a saved model and reports. The API loads that model and serves predictions and saved results. The website is what people use, and it only reaches the model and results through the API.
 
 ```text
-TRAINING (runs ahead of time)                 API (runs on request)
+TRAINING (runs ahead of time)         API (port 8000)              WEBSITE (port 5173)
 
-Raw CSV (local, not in Git)                   HTTP client
-   │                                             │  POST /api/classify
-   ▼                                             ▼
-backend/training/  ──── imports ───►  backend/app/
-   │                                             │
-   ▼                                             ▼
-spamshield_pipeline.joblib ──── loaded at startup ──► verified model in memory
-pipeline_metadata.json
-backend/reports/*.json ──── read by ──► /api/model-info
+Raw CSV (local, not in Git)
+   │
+   ▼
+backend/training/ ── imports ─► backend/app/ ◄── HTTP and JSON ── frontend/src/
+   │                               ▲    ▲                         services/api.ts
+   ▼                               │    │                              ▲
+spamshield_pipeline.joblib ────────┘    │                              │
+pipeline_metadata.json   loaded at      │                         Browser
+backend/reports/*.json ─────────────────┘
+                          read on request
 ```
+
+The website has no copy of the model or the results. If the API can't answer, the website shows an error, not a stand-in.
+
+## Website flow
+
+```text
+ClassifierPage                 POST /api/classify        Label, decision score, explanation
+ModelsPage    ─► services/api.ts ─► GET /api/results/models ─► Saved comparison and evaluation
+DatasetPage                    GET /api/results/dataset  Verified aggregate statistics
+                               GET /api/health           Whether the API and model are ready
+```
+
+Pages only render what the API returned. The browser sends message text to the API on `127.0.0.1` and nowhere else, and doesn't store it. The API's CORS rules allow only `http://localhost:5173` and `http://127.0.0.1:5173`.
 
 ## Training flow
 
@@ -79,7 +93,11 @@ The message isn't stored, logged or repeated in any response. All errors use one
 | `GET /api/health` | Is the API up, and is the model loaded? | `200`, or `503` with the reason |
 | `POST /api/classify` | Classify one message, and explain the score | `200`, `400`, `413`, `422`, `500`, `503` |
 | `GET /api/model-info` | Model details, measured results and limitations | `200`, `503` |
+| `GET /api/results/models` | Saved model comparison, final evaluation and source-leakage results | `200`, `503` |
+| `GET /api/results/dataset` | Verified aggregate dataset statistics | `200`, `503` |
 | `GET /docs` | Generated API documentation | `200` |
+
+The results endpoints only read committed reports, so they work even without the model loaded. Their schemas act as an allowlist, so anything else that appeared in a report wouldn't reach the website.
 
 ## Startup
 
@@ -103,6 +121,11 @@ The model is loaded once, so requests don't reload it.
 | Prediction | `backend/app/ml/predict.py` | Verified loading, fingerprint and classification | `joblib`, `numpy`, `scikit-learn` |
 | Explanations | `backend/app/ml/explain.py` | Term contributions from the model's weights | `numpy`, `scipy` |
 | Model information | `backend/app/ml/model_info.py` | Describes the model from metadata and reports | Saved reports |
+| Saved results | `backend/app/ml/results.py`, `backend/app/schemas/results.py` | Reads reports for the website, limited to named fields | Saved reports, Pydantic |
+| Website pages | `frontend/src/pages/` | Classifier, Models and Dataset pages | React, components, API service |
+| Website components | `frontend/src/components/` | Form, result, explanation, tables and messages | React, Tailwind CSS |
+| API service | `frontend/src/services/api.ts` | The only code that calls the network | The backend's endpoints |
+| Website tests | `frontend/src/**/*.test.*`, `frontend/tests/e2e/` | Unit tests, and browser tests with the real backend and model | Vitest, Testing Library, Playwright, axe |
 | Training code | `backend/training/` | Inspection, cleaning, splitting, experiments, training, evaluation | `app.ml`, `pandas`, `numpy`, `scipy`, `scikit-learn` |
 | Tests | `backend/tests/` | Automated checks, mostly on made-up data | `pytest`, `httpx2`, `uvicorn` |
 | Reports | `backend/reports/` | Generated results, aggregate only when committed | Training code |
@@ -129,7 +152,14 @@ The saved pipeline contains the fitted TF-IDF vectoriser, its reference to `app.
 | Errors never repeat submitted text | `handle_validation_error` in `app/main.py` |
 | Failures log only the error's type | `classify_email` in `app/api/routes.py` |
 | Removed words are never exposed | `build_model_info` in `app/ml/model_info.py` |
+| Results are limited to named fields | `app/schemas/results.py` |
+| Word lists are never read for results | `app/ml/results.py` |
+| No probability can be displayed | `confidence: null` type in `frontend/src/types/api.ts` |
+| Application code has no fabricated results | `frontend/src/noFabrication.test.ts`, plus browser tests against the report files |
+| Late responses can't replace newer ones | `currentRequest` in `frontend/src/pages/ClassifierPage.tsx` |
 
-## Planned
+## Not included
 
-**Milestone 5:** a working React and TypeScript website connected to this API, which can be opened locally and used end to end. It isn't built yet.
+- **Deployment:** this runs locally. The API has no authentication or rate limiting, and the website uses Vite's development server.
+- **Prediction history:** deferred.
+- **Docker packaging:** optional in Milestone 6.

@@ -7,8 +7,8 @@
     "model_content_sha256": "6f5135d9e9e3832ef8513607fe645661abfc84096c983ba7430378652a10c2e2"
   },
   "in_process_request_latency": {
-    "median_ms": 2.48,
-    "p95_ms": 3.75
+    "median_ms": 9.12,
+    "p95_ms": 17.1
   },
   "label_mismatches": 0,
   "metrics_on_accepted_rows": {

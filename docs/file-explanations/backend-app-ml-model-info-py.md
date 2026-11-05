@@ -43,7 +43,7 @@ It combines the model's metadata with the saved evaluation reports. Results are 
 
 ## 7. How its output is used next
 
-`routes.py` returns it from `/api/model-info`. The website can use it in Milestone 5.
+`routes.py` returns it from `/api/model-info`. [`results.py`](../../backend/app/ml/results.py) also uses its `LIMITATIONS`, for the website's Models page.
 
 ## 8. Tests
 

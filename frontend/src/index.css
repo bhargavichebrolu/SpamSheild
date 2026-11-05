@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/* Colours are defined once here, by role, and swap together in dark mode. Text always uses
+   an ink colour. Only marks use the Ham and Spam colours, so text stays readable. */
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-line: var(--line);
+  --color-axis: var(--axis);
+  --color-ham: var(--ham);
+  --color-spam: var(--spam);
+  --color-critical: var(--critical);
+  --color-warning: var(--warning);
+  --color-link: var(--link);
+  --color-highlight: var(--highlight);
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-secondary: #52514e;
+  --line: #e1e0d9;
+  --axis: #c3c2b7;
+  --ham: #2a78d6;
+  --spam: #e34948;
+  --critical: #d03b3b;
+  --warning: #fab219;
+  --link: #1c5cab;
+  --highlight: #cde2fb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #f0efec;
+    --ink-secondary: #c3c2b7;
+    --line: #2c2c2a;
+    --axis: #383835;
+    --ham: #3987e5;
+    --spam: #e66767;
+    --critical: #d03b3b;
+    --warning: #fab219;
+    --link: #86b6ef;
+    --highlight: #184f95;
+  }
+}
+
+body {
+  background-color: var(--page);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+@layer components {
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .data-table caption {
+    margin-bottom: 0.5rem;
+    color: var(--ink-secondary);
+    text-align: left;
+  }
+
+  .data-table th,
+  .data-table td {
+    border-bottom: 1px solid var(--line);
+    padding: 0.5rem 0.75rem;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .data-table th:first-child,
+  .data-table td:first-child {
+    padding-left: 0;
+    text-align: left;
+  }
+
+  .data-table td {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .data-table thead th {
+    border-bottom-color: var(--axis);
+    color: var(--ink-secondary);
+    font-weight: 600;
+  }
+
+  /* Row names wrap, so that a long one doesn't push the numbers off a narrow screen. */
+  .data-table tbody th {
+    font-weight: 500;
+    min-width: 9rem;
+    white-space: normal;
+  }
+
+  .data-table tr[data-highlight="true"] > * {
+    background-color: var(--highlight);
+  }
+
+  .data-table tr[data-highlight="true"] > :first-child {
+    padding-left: 0.5rem;
+  }
+}

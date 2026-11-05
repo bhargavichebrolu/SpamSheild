@@ -56,7 +56,7 @@ Passing tests are part of Milestone 3's acceptance check, and they protect the l
 python -m pytest backend
 ```
 
-Result on 2026-11-05: the full suite of 162 tests passed.
+Result on 2026-11-05: the full suite of 290 tests passed.
 
 ## 9. Alternatives considered
 

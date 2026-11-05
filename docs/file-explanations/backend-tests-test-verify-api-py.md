@@ -49,7 +49,7 @@ Passing tests are part of Milestone 4's acceptance check.
 python -m pytest backend
 ```
 
-Result on 2026-11-05: the full suite of 260 tests passed, including the real-model tests.
+Result on 2026-11-05: the full suite of 290 tests passed, including the real-model tests.
 
 ## 9. Alternatives considered
 

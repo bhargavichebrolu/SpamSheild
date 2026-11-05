@@ -42,7 +42,7 @@ It describes data, and validates the request. It doesn't classify anything.
 
 ## 7. How its output is used next
 
-`routes.py` uses these for requests and responses, and they will guide the website's TypeScript types in Milestone 5.
+`routes.py` uses these for requests and responses, and they guided the website's types in `frontend/src/types/api.ts`.
 
 ## 8. Tests
 

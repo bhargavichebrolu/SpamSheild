@@ -38,7 +38,7 @@ It has no inputs or outputs. Other files import its constants.
 
 ## 7. How its output is used next
 
-`main.py`, `predict.py`, `model_info.py` and `schemas/prediction.py` import it.
+`main.py`, `predict.py`, `model_info.py`, `results.py` and `schemas/prediction.py` import it.
 
 ## 8. Tests
 

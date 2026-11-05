@@ -153,7 +153,7 @@ This rule was also fixed before any leakage result was seen: use the removal onl
 ## Intended use
 
 - Demonstrating and learning about an explainable text classification pipeline
-- Trying out individual messages in a local application, once built, with the understanding that results are indicative only
+- Trying out individual messages in the local website, with the understanding that results are indicative only
 
 ## Out-of-scope uses
 
@@ -178,13 +178,15 @@ These are expected from the results above. Specific real-world rates haven't bee
 - Legitimate email from an unfamiliar source or topic being flagged as spam
 - Spam with no close match in training being missed
 - Short messages, which give the model few words to use. The model's intercept is positive (+0.71), so its starting score leans towards spam, and a message needs enough Ham-leaning terms to overcome that. For example, the harmless text `Example message text` is classified as Spam, which is a single example and not a measured rate
-- Odd word associations learned from this dataset. In one test message, `congratulations` pushed the score towards Ham, and the API's explanations will show patterns like this
+- Odd word associations learned from this dataset. In one test message, `congratulations` pushed the score towards Ham, and explanations will show patterns like this
+
+The website adds a caution when fewer than 5 words are recognised. That threshold is a display warning, not a measured reliability boundary, and it doesn't change the prediction.
 - Messages with few or no known words, such as other languages, where the result says little
 - Text after the first 20,000 characters, which the model doesn't read
 
 ## Confidence and calibration
 
-**This model doesn't provide a probability.** A Linear SVM produces a score, where the sign gives the label and a larger size means further from the decision boundary. That score isn't a percentage or a chance of being correct, and it must not be displayed as one. The API's `confidence` field is therefore always `null`.
+**This model doesn't provide a probability.** A Linear SVM produces a score, where the sign gives the label and a larger size means further from the decision boundary. That score isn't a percentage or a chance of being correct, and it must not be displayed as one. The API's `confidence` field is therefore always `null`, and the website labels the value a decision score and shows no percentage with a prediction.
 
 Calibrating it into a probability would change the frozen pipeline after its one test evaluation, so that's future work needing its own held-out data.
 

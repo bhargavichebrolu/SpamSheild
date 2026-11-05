@@ -45,11 +45,11 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ## 6. Dependencies
 
 - **Packages:** `fastapi`, `starlette`.
-- **Project files:** `app/api/routes.py`, `app/config.py`, `app/ml/predict.py`.
+- **Project files:** `app/api/routes.py`, `app/config.py`, `app/ml/predict.py`, `app/ml/results.py`.
 
 ## 7. How its output is used next
 
-Uvicorn runs it, and the website will call it in Milestone 5.
+Uvicorn runs it, and the website calls it. Its CORS rules are what allow the website's address, `http://localhost:5173`, to read responses.
 
 ## 8. Tests
 

@@ -46,7 +46,7 @@ It sends requests to the application, using the tiny model from `conftest.py`, a
 
 ## 7. How its output is used next
 
-Passing tests are part of Milestone 4's acceptance check. They also protect the API while the website is built.
+Passing tests are part of Milestone 4's acceptance check. They also protect the API the website depends on.
 
 ## 8. Tests and how to run them
 
@@ -54,7 +54,7 @@ Passing tests are part of Milestone 4's acceptance check. They also protect the 
 python -m pytest backend
 ```
 
-Result on 2026-11-05: the full suite of 260 tests passed.
+Result on 2026-11-05: the full suite of 290 tests passed.
 
 ## 9. Alternatives considered
 

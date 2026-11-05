@@ -55,7 +55,7 @@ Most functions take data and return results, with file writing and printing kept
 
 - [`docs/dataset-card.md`](../dataset-card.md) records the verified facts by hand from the report.
 - [`prepare_data.py`](../../backend/training/prepare_data.py) reuses its helpers, and its cleaning rules follow from the duplicate, conflict and length findings.
-- Milestone 5's dataset explorer can read the report directly.
+- The website's Dataset page displays the report's statistics, through `/api/results/dataset`.
 
 ## 8. Tests
 

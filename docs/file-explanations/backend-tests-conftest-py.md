@@ -47,7 +47,7 @@ It provides shared test setup, using made-up text. It doesn't need the dataset, 
 python -m pytest backend
 ```
 
-Result on 2026-11-05: the full suite of 260 tests passed.
+Result on 2026-11-05: the full suite of 290 tests passed.
 
 ## 9. Alternatives considered
 

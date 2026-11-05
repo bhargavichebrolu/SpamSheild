@@ -181,9 +181,9 @@ None. Milestone 4 continued this work.
 
 ## 2026-11-05: Milestone 4, FastAPI backend and prediction pipeline
 
-**Status:** Implemented and awaiting review.
+**Status:** Complete.
 
-**Commit:** Not committed yet.
+**Commit:** `620d9c2`
 
 ### Work completed
 
@@ -238,5 +238,76 @@ Latency was measured on an i7-12650H with other applications open. The results o
 
 ### Remaining work
 
+None. Milestone 5 continued this work.
+
+## 2026-11-05: Milestone 5, React web application and explainability
+
+**Status:** Implemented and awaiting review.
+
+**Commit:** Not committed yet.
+
+### Work completed
+
+- Committed Milestone 4 as `620d9c2`, at the project owner's request, after their pre-commit checks passed.
+- Added two read-only results endpoints, whose schemas act as an allowlist.
+- Built a React and TypeScript website with Classifier, Models and Dataset pages, connected to the real API.
+- Added loading, validation and error states, the short-message caution, and responsive layouts.
+- Wrote 90 frontend unit tests, 54 browser tests and 30 new backend tests, and captured screenshots of the actual pages.
+- Updated the architecture, project explanation, PRD, README and source-file logs.
+
+The frozen model, its metadata and the training pipeline weren't changed. The file hash stayed `ed9f16df…212e862`, and the content fingerprint stayed `6f5135d9…a10c2e2`.
+
+### Important decisions
+
+| Decision | Reason |
+|---|---|
+| Add `/api/results/models` and `/api/results/dataset` | The existing API couldn't serve these pages. Approved by the project owner. |
+| Label the raw score a decision score | It isn't a probability. Required by the project owner. |
+| Caution below 5 recognised words | The intercept leans towards spam. The threshold is a display warning, not a measured boundary, and it doesn't change the prediction. Approved by the project owner. |
+| Defer prediction history | Optional in the PRD, and it adds storage and privacy work. Decided by the project owner. |
+| Call the API directly, not through a proxy | Exercises the real CORS rules |
+| One file for all network calls | Failure handling stays in one place, and a test can check this |
+| Build charts from plain HTML and CSS | The bars are simple, and every value is also written as text |
+| Validate the Ham and Spam colours with a script | Colour-vision safety was checked by calculation, not by eye, in both modes |
+| No text on coloured fills | White text on those colours would fail contrast checks |
+| Browser tests against the real backend | A stubbed API couldn't catch a real mismatch |
+| Use the installed Edge browser for tests | Avoids downloading another browser |
+
+### Problems encountered
+
+| Problem | Cause | Resolution |
+|---|---|---|
+| A pre-commit check stopped the Milestone 4 commit | A new pattern, `secret_`, matched a made-up test constant called `SECRET_TEXT` | Narrowed the pattern, confirmed it still caught real secrets, and reran every check |
+| **Text was cut off on phones, though all tests passed** | Source details and captions were inside tables, and the tests only checked that the page didn't scroll sideways. I only noticed by looking at screenshots. | Moved source details to a wrapping list and captions outside tables, added a scroll hint, and added a browser test that checks text fits |
+| 55 unit tests failed at first | Testing Library's automatic cleanup didn't run, so pages carried over between tests | Added explicit cleanup |
+| The no-fabrication scan failed on my own code | `0.473` was in a comment, as a formatting example | Reworded the comment |
+| Browser tests couldn't start the backend | Windows' command shell can't run a forward-slash path | Resolved and quoted the path |
+| A backend test failed after I split it | I'd dropped the exception for words a committed report publishes on purpose | The test now reads those words from that report |
+| A website process kept running after a check | My cleanup didn't reach a process started through `cmd` | Stopped it, after confirming it was this project's server |
+| Type error with the accessibility tool | It has its own copy of Playwright's types | Added a cast, with a comment |
+
+### Tests and actual results
+
+| Check | Result |
+|---|---|
+| `python -m pytest backend` | 290 passed |
+| `npm test` | 90 passed |
+| `npm run test:e2e`, real backend and model | 50 passed |
+| `npm run test:e2e:api-down`, backend really stopped | 4 passed |
+| Layouts at 360, 768 and 1280 pixels | No sideways page scrolling, text fits, and every overflowing table says so. Also inspected by eye |
+| Automated accessibility checks (axe, WCAG A and AA), light and dark | No violations found |
+| Clean `npm ci` in a temporary copy | Installed, built and passed the 90 unit tests |
+| `npm audit` at install | 0 vulnerabilities |
+| Every validation message through the API (19,082) | 0 label, score or explanation mismatches, and 0 unexpected failures |
+| The exact start commands | Both applications started, and all pages and endpoints responded |
+| Production bundle | Contains no test data |
+| Frozen model | Same file hash and fingerprint, with no changes under `backend/training` or `backend/models` |
+
+These were run on an i7-12650H with 15.7 GB RAM, with other applications open, using Edge.
+
+**Not tested:** a screen reader, a real phone, browsers other than Edge, or email from outside this dataset.
+
+### Remaining work
+
 - Project owner to review and commit.
-- Milestone 5: a working React and TypeScript website connected to this API.
+- Milestone 6: full verification, final documentation, and portfolio readiness.
