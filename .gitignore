@@ -1,0 +1,27 @@
+# Python virtual environment: machine-specific and recreated from requirements.txt
+.venv/
+
+# Python generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Datasets: too large for Git, and the licence is not yet confirmed
+backend/data/raw/
+backend/data/processed/
+*.csv
+*.zip
+
+# Generated artefacts that can be rebuilt
+*.joblib
+*.db
+*.sqlite3
+
+# Secrets and local settings
+.env
+.env.*
+
+# Operating system files
+Thumbs.db
+Desktop.ini
+.DS_Store

@@ -1,0 +1,112 @@
+{
+  "blank_text": {
+    "empty_rows": {
+      "Ham": 1,
+      "Spam": 1
+    },
+    "whitespace_only_rows": 0
+  },
+  "duplicates": {
+    "exact_conflicting_labels": {
+      "rows": 6,
+      "texts": 3
+    },
+    "exact_duplicate_text_rows": 3,
+    "identical_rows": 0,
+    "normalised_conflicting_labels": {
+      "rows": 11,
+      "texts": 5
+    },
+    "normalised_duplicate_rows": 1733
+  },
+  "environment": {
+    "pandas": "3.1.1",
+    "python": "3.14.3"
+  },
+  "file": {
+    "format": "CSV, UTF-8",
+    "name": "spam_Emails_data.csv",
+    "sha256": "e7f57b47676e456ebf9866dc1fd311a93e923458c76a22b6ea5c9439f4da58aa",
+    "size_bytes": 357681979
+  },
+  "labels": {
+    "Ham": {
+      "rows": 102160,
+      "share": 0.527
+    },
+    "Spam": {
+      "rows": 91692,
+      "share": 0.473
+    }
+  },
+  "lengths": {
+    "by_label": {
+      "Ham": {
+        "max": 11510306,
+        "mean": 2169.7,
+        "median": 950,
+        "min": 1,
+        "p95": 6466,
+        "p99": 19719,
+        "rows": 102159
+      },
+      "Spam": {
+        "max": 144087,
+        "mean": 1415.1,
+        "median": 675,
+        "min": 1,
+        "p95": 5173,
+        "p99": 10435,
+        "rows": 91691
+      }
+    },
+    "rows_over_chars": {
+      "100000": 58,
+      "1000000": 1,
+      "20000": 1164,
+      "50000": 237
+    },
+    "rows_under_20_chars": {
+      "Ham": 382,
+      "Spam": 838
+    }
+  },
+  "marker_document_frequency": {
+    "enron": {
+      "Ham": 0.2728,
+      "Spam": 0.0501
+    },
+    "escapelong": {
+      "Ham": 0.1048,
+      "Spam": 0.2398
+    },
+    "escapenumber": {
+      "Ham": 0.7142,
+      "Spam": 0.5782
+    },
+    "http": {
+      "Ham": 0.2827,
+      "Spam": 0.45
+    },
+    "subject": {
+      "Ham": 0.3875,
+      "Spam": 0.0723
+    }
+  },
+  "missing_values": {
+    "label": 0,
+    "text": 0
+  },
+  "structure": {
+    "columns": [
+      "label",
+      "text"
+    ],
+    "dtypes": {
+      "label": "str",
+      "text": "str"
+    },
+    "rows": 193852
+  },
+  "text_pandas_would_treat_as_missing_by_default": 0
+}

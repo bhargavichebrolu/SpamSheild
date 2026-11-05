@@ -1,0 +1,5 @@
+# Direct dependencies for the code that exists so far. Versions are pinned for reproducibility.
+# Later milestones add their own packages here.
+numpy==2.5.4
+pandas==3.1.1
+pytest==9.2.0
