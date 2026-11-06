@@ -16,6 +16,7 @@ Input: values from the API. Output: display text.
 
 ## 4. Important functions and variables
 
+
 `modelName`, `featureName`, `styleName`, `removalName`, `flagName`, `bandName`, `settingText`, `count`, `metric`, `share`, `signed`, `fileSize`.
 
 ## 5. Key implementation decisions
